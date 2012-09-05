@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>{sitename} Image Gallery "{gallery_name}" by {username}</title>
+<link rel="stylesheet" type="text/css" href="{siteurl}gallery-styles.css" />
+</head>
+<body>
+<div class="topbanner">{bannerad}</div>
+<div class="fit">
+	<div class="galleryname">{gallery_name}</div>
+	<div class="galleryintro">{gallery_intro}</div>
+	<br clear="all" />
+	<div class="images">
+		<images>
+			<div class="thumbholder">
+				<a href="{image_url}"><img class="thumb" border="0" src="{thumb_url}" alt="Click To View" /></a>
+				<div class="thumbinfo">{image_name}<br />({image_width}x{image_height})</div>
+			</div>
+		</images>
+	</div>
+	<br clear="all" />
+	<div class="footer">
+		Free Image Hosting from <a href="{siteurl}">{sitename}</a>.
+	</div>
+</div>
+<div class="bottombanner">{bannerad}</div>
+</body>
+</html>

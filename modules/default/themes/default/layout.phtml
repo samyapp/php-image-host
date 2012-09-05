@@ -1,0 +1,141 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php
+/*
+
+PHP Image Host
+www.phpace.com/php-image-host
+
+Copyright (c) 2004,2008 Sam Yapp
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+*/
+
+// include and initialize the banner ad rotator.
+
+require_once(CLASS_DIR . DIRECTORY_SEPARATOR.'/adrotator.class.php');
+$ads = new adrotator($this->app);
+
+// tell the banner ad rotator to preload two ads (one for the top, and one for the bottom of each page)
+
+$ads->preload(2);
+
+// start of site html code
+?>
+<html>
+    <head>
+        <title><?php echo htmlspecialchars($config->sitename);?></title>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->staticURL($config->stylesheet)?>" />
+        <script language="JavaScript" type="text/javascript" src="<?php echo $this->themesURL().'/default/js.js'?>"></script>
+    </head>
+    <body>
+    <div id="page">
+        <!-- header start -->
+        <div id="header">
+        	<div id="logo">
+            <!-- you can add your own logo here... by default, the site name is displayed as text -->
+        		<div id="logotext"><a href="<?php echo $config->siteurl;?>"><?php echo htmlspecialchars($config->sitename);?></a></div>
+        	</div>
+        	<div id="topbanner"><?php $ads->display();?></div>
+        </div>
+        <!-- header end -->
+
+        <!-- navigation bar start -->
+<div id="navbar">
+	<a href="<?php echo $this->url()?>"><?php echo $this->t('Home')?></a>
+<?php if( $this->app->config->browse_images ){ ?>
+	<a href="<?php echo $this->url('browse')?>"><?php echo $this->t('Browse Images')?></a>
+<?php if( $this->app->config->log_image_views ) { ?>
+    <a href="<?php echo $this->url('browse', 'popular=images')?>"><?php echo $this->t('Popular')?></a>
+<?php } ?>
+<?php if( $this->app->config->image_ratings != 'off' ) { ?>
+    <a href="<?php echo $this->url('browse', 'top=images')?>"><?php echo $this->t('Top Rated')?></a>
+<?php } ?>
+	<a href="<?php echo $this->url('random')?>"><?php echo $this->t('Random Images')?></a>
+<?php } ?>
+<?php if( !$loggedin ){ ?>
+	<a href="<?php echo $this->url('login')?>"><?php echo $this->t('Login')?></a>
+	<a href="<?php echo $this->url('join')?>"><?php echo $this->t('Sign Up')?></a>
+<?php } ?>
+	<a href="<?php echo $this->url('myimages')?>"><?php echo $this->t('My Images')?></a>
+	<a href="<?php echo $this->url('galleries')?>"><?php echo $this->t('My Galleries')?></a>
+	<a href="<?php echo $this->url('upload')?>"><?php echo $this->t('Upload')?></a>
+	<a href="<?php echo $this->url('upgrade')?>"><?php echo $this->t('Upgrade')?></a>
+</div>
+<!-- navigation bar end-->
+
+<!-- open div to contain content for each page -->
+<div id="content">
+<?php
+	if( $this->app->config->sidebar_account_pos == 'navbar' ){
+		echo $this->render('account_info');
+	}
+
+	if( !empty($errors) ) {
+?>
+<div class="errors"><?php echo $this->t('The following error occurred:')?><br /><br /><?php echo join("<br />\n", $errors);?></div>
+<?php
+	}	
+	
+    echo $this->templateContent;
+?>
+                <!-- bottom banner ad  -->
+                <div id="bottombanner"><?php $ads->display();?></div>
+                <!-- end bottom ad -->
+
+                <!-- site footer, copyright, etc -->
+                <div id="footer">
+                    <div id="footernav">
+                        <a href="<?php echo $this->url('news')?>"><?php echo $this->t('Site News')?></a>
+                        <a href="<?php echo $this->url('faq')?>"><?php echo $this->t('Faq')?></a>
+                        <a href="<?php echo $this->url('contact')?>"><?php echo $this->t('Contact')?></a>
+                        <a href="<?php echo $this->url('terms')?>"><?php echo $this->t('Terms')?></a>
+                        <a href="<?php echo $this->url('privacy-policy')?>"><?php echo $this->t('Privacy Policy')?></a>
+                    </div>
+                    <?php echo $this->t('All content copyright')?> &copy; 2009 <?php echo htmlspecialchars($config->sitename);?>
+                    <!-- Page generated in <?php echo $this->app->getTimeTaken()?> seconds. -->
+                </div>
+
+            </div>
+            <!-- end of main page content div -->
+
+            <!-- vertical side panel -->
+            <div id="sidepanel">
+            <?php echo $sideContent?>
+            </div>
+            <!-- end of vertical side panel -->
+
+            <!-- spacer -->
+            <div style="clear: both;"> </div>
+
+        </div>
+
+        <!-- end of main page -->
+
+        <div class="poweredby">
+            Powered by <a href="http://www.phpace.com/" title="open source php scripts and tutorials" target="_blank">phpAce</a> <a target="_blank" href="http://www.phpace.com/php-image-host/" title="free php image hosting script"><?php echo $this->app->poweredBy()?></a>.
+        </div>
+    </body>
+</html>

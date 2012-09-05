@@ -1,0 +1,31 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php
+echo $this->_t('Rotate Image Content');
+if( $rotated ){
+	echo $this->_t('Image Rotated Content');
+}
+?>
+<form action="<?php echo $this->url('rotate')?>" method="post">
+<input type="hidden" name="i" value="<?php echo $iid;?>" />
+<div class="resizeform">
+	<div class="resizethumb"><a onClick="return si('<?php echo $image->image_url.'?t='.time();?>', <?php echo $image->width;?>, <?php echo $image->height;?>);"  target="_blank" href="<?php echo $image->image_url;?>?t=<?php echo time()?>"><img border="0" class="thumb" src="<?php echo $image->thumb_url;?>?i=<?php echo time()?>" alt="" /></a>
+		<br />(<?php echo $image->width.'x'.$image->height;?>)
+	</div>
+	<div class="resizefields">
+		<?php echo $this->t('Rotate')?> "<?php echo $image->name.'.'.$image->type;?>"
+		<select name="angle">
+			<option value="90"><?php echo $this->t('Clockwise')?></option>
+			<option value="270"><?php echo $this->t('Anti-clockwise')?></option>
+			<option value="180">180 &degr;</option>
+		</select>
+		<input type="submit" class="resizesubmit" name="rotate" value="<?php echo $this->t('Rotate Image')?>" />
+	</div>
+	<br clear="all" />
+</div>
+</form>

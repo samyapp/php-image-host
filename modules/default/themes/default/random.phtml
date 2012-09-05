@@ -1,0 +1,37 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<h3><?php echo $this->t('Random Images')?></h3>
+<div id="browsethumbs">
+	<?php foreach( $imgs as $i ){?>
+	<div class="bimg" style="width: <?php echo $this->app->config->thumbnail_width + 30?>px; height: <?php echo $this->app->config->thumbnail_height + 60?>px;">
+		<a class="imga" href="<?php echo $this->url('browse','id='.$i->image_id.'&view=1')?>"><img src="<?php echo $i->thumb_url?>" border="0" /></a>
+		<div class="tinfo">
+        <?php if( $this->app->config->image_ratings != 'off' ) { ?>
+            <img src="<?php echo $this->themesURL().'/default/gfx/r'.$i->rating.'.png'?>" />
+        <?php } ?>
+			<?php echo $i->name?>.<?php echo $i->type?>
+			<br />
+			(<?php echo $i->width.'x'.$i->height?>)<br />
+ 			<?php echo $this->t('by')?> <a href="<?php echo $this->url('browse','username='.$i->username)?>"><?php echo $i->username?></a>
+			<?php if( $i->gallery_id ){ ?>
+			<br /><?php echo $this->t('in')?> <a href="<?php echo $this->url('browse','g='.$i->gallery_id)?>"><?php echo htmlspecialchars($i->gallery_name)?></a>
+			<?php }?>
+        <?php if( $this->app->config->log_image_views ) { ?>
+            <br />(<?php echo $i->views?> <?php echo $this->t('views')?>)
+        <?php } ?>
+		</div>
+	</div>
+	<?php
+		}
+	?>
+</div>
+<div style="clear: both; text-align: center;">
+	<form action="<?php echo $this->url('random')?>" method="post">
+		<input type="submit" value="<?php echo $this->t('Get More Images')?>" />
+	</form>
+</div>

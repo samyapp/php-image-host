@@ -1,0 +1,20 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<h2>Database Backup</h2>
+<?php if( $error ) { ?>
+<div class="errors">
+    <h3>The following error occurred whilst attempting to backup your database:</h3>
+    <?php echo $error?>
+</div>
+<?php }elseif( $files ) { ?>
+<h3>The following backup files were created</h3>
+<?php print_r($files)?>
+<?php } ?>
+<form action="<?php echo $this->url('backup')?>" method="post">
+    <input type="submit" name="backup" value="Backup Database" />
+</form>

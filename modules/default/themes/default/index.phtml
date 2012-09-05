@@ -1,0 +1,99 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php
+
+if( $this->app->config->homepage_news_items != 0 ) {
+    $news_items = $this->helper('news')->getNews($this->app->config->homepage_news_items);
+    if( $news_items ) {
+?>
+<div id="hpnews">
+    <h2><?php echo $this->t('Latest Site News')?></h2>
+    <?php foreach( $news_items as $news ) {?>
+      <div>
+        <a href="<?php echo $this->url('news', 'article='.$news->news_id)?>"><?php echo htmlspecialchars($news->headline)?></a>
+        <i><?php echo date('l jS F Y', strtotime($news->published))?></i>
+        <p><?php echo nl2br(htmlspecialchars($news->summary))?></p>
+      </div>
+    <?php } ?>
+</div>
+<?php
+    }
+}
+if( $this->app->config->home_page_single_image != 'none' ) {
+	if( $this->app->config->home_page_single_image == 'random' ) {
+		$ob = 'random';
+		$od = '';
+	}
+	else{
+		$ob = 'uploaded';
+		$od = 'desc';
+	}
+	$images = $this->app->loadClass('images');
+	$tmp = $images->getimages(array('checked'=>1,'public'=>1),$ob, $od, 0, 1);
+	if( count($tmp) ){
+		$image = $tmp[0];
+?>
+<div id="homepageimage">
+	<a href="<?php echo $this->url('browse','view=1&id='.$image->image_id)?>"><img width="<?php echo min($image->width,$this->app->config->home_page_image_width)?>" border="0" src="<?php echo $image->image_url?>" alt="" /></a>
+	<br /><?php echo $this->t('uploaded by')?> <a href="<?php echo $this->url('browse','username='.$image->username)?>"><?php echo $image->username?></a>
+</div>
+<?php
+	}
+}
+
+// display the content for the home page.
+
+echo $this->_t('Home Page Content');
+
+if( $this->app->config->home_page_images > 0 && $this->app->config->home_page_which_images != 'none' ) {
+	if( $this->app->config->home_page_which_images == 'random' ) {
+		$ob = 'random';
+		$od = '';
+	}
+	else{
+		$ob = 'uploaded';
+		$od = 'desc';
+	}
+    $images = $this->app->loadClass('images');
+	$imgs = $images->getimages(array('checked'=>1,'public'=>1),$ob, $od, 0, $this->app->config->home_page_images);
+	if( $this->app->config->home_page_thumb_width == 0 ){
+		$dwidth = $this->app->config->thumbnail_width + 10;
+		$dheight = $this->app->config->thumbnail_height + 10;
+		$twidth = '';
+		$theight = '';
+	}
+	else{
+		$dwidth = $this->app->config->home_page_thumb_width + 10;
+		$dheight = ceil($this->app->config->thumbnail_height / ($this->app->config->thumbnail_width / $this->app->config->home_page_thumb_width) ) + 10;
+		$twidth = $this->app->config->home_page_thumb_width;
+		$theight = $this->app->config->home_page_thumb_width;
+	}
+?>
+<div id="homepagethumbs">
+<div class="wr">
+<h3><?php echo $this->app->config->home_page_which_images == 'random' ? $this->t('Random Images') : $this->t('Latest Images')?></h3>
+<?php foreach( $imgs as $i ){ ?>
+<div class="im" style="width: <?php echo $dwidth?>px; height: <?php echo $dheight?>px;">
+	<a href="<?php echo $this->url('browse','view=1&id='.$i->image_id)?>"><img <?php if( $twidth ) echo ' width="'.$twidth.'"'?> <?php if( $theight) echo ' height="'.$theight.'" '?> border="0" src="<?php echo $i->thumb_url;?>" alt="" /></a>
+</div>
+<?php } ?>
+	<div class="im" style="height: <?php echo $dheight?>px; vertical-align: bottom;">
+	<a href="<?php echo $this->url($this->app->config->home_page_which_images == 'random' ? 'random' : 'browse')?>"><?php echo $this->t('more images...')?></a>
+	</div>
+</div>
+</div>
+<?php
+}
+
+?>
+<div style="clear: both;"></div>
+<?php
+if( $this->app->config->home_page_show_plans ) {
+	echo $this->render('plans');
+}
+

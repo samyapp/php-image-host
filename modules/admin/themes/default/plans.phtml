@@ -1,0 +1,239 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<div style="text-align: center;">
+<b>Account Features</b><br /><br />
+This page allows you to change the settings for what features the free and paid accounts have.
+</div>
+<div style="text-align: center;">
+<p>
+The maximum image filesize that can be uploaded to your site is set in your php configuration.
+Please contact your server administrator or web host if you need to change it.
+</p>
+<p>
+Your current php ini maximum file upload size settings are:
+<br />post_max_size = <?php echo ini_get('post_max_size');?> (maximum combined size of multiple file upload)
+<br />upload_max_filesize = <?php echo ini_get('upload_max_filesize');?> (maximum filesize for a single file upload)
+</p>
+</div>
+<br /><br />
+<?php if( $errors ) echo '<div style="text-align: center;margin: 1em;"><h2>Please correct these errors:</h2>'.$errors.'<?div>';?>
+<?php if( $message ) echo $message;?>
+<form action="<?php echo $this->url('plans')?>" method="post">
+<table class="formtable" cellspacing="1" border="0" cellpadding="0" align="center">
+<tr>
+	<td class="formheading">&nbsp;</td>
+	<td class="formheading">Free Membership</td>
+	<td class="formheading">Paid Membership</td>
+    <td class="formheading">Non-Members</td>
+</tr>
+<tr>
+	<td class="formlabel">Plan Name:</td>
+	<td class="formfield"><input type="text" name="type_name1" value="<?php echo htmlspecialchars($plans['free']->type_name);?>" /></td>
+	<td class="formfield"><input type="text" name="type_name2" value="<?php echo htmlspecialchars($plans['paid']->type_name);?>" /></td>
+    <td class="formfield"><input type="checkbox" name="anonymous_uploads" value="1" <?php if( $this->app->config->anonymous_uploads ) echo ' checked="checked" '?> />
+    Enable uploads for non-members?
+    </td>
+</tr>
+<tr>
+	<td class="formlabel" rowspan="4">Price:</td>
+	<td class="formfield" style="text-align: right;">1 Month:</td>
+	<td class="formfield"><input type="text" name="cost_1" value="<?php echo $plans['paid']->cost_1;?>" /></td>
+    <td rowspan="5" class="formfield" style="vertical-align: top;">
+        <b>Anonymous Uploads Account Name:</b>
+        <br />
+        <input type="text" name="anonymous_account" value="<?php echo htmlspecialchars($this->app->config->anonymous_account)?>" />
+        <br />
+        To enable anonymous uploads you must specify <br />
+        the account name (username) of the account to <br />
+        use for anonymous uploads. If this account does <br />
+        not exist it will be created automatically.
+        <br />
+        You <i>cannot</i> specify the name of an <br />existing free or paid account.
+    </td>
+</tr>
+<tr>
+	<td class="formfield" style="text-align: right;">3 Months:</td>
+	<td class="formfield"><input type="text" name="cost_3" value="<?php echo $plans['paid']->cost_3;?>" /></td>
+</tr>
+<tr>
+	<td class="formfield" style="text-align: right;">6 Months:</td>
+	<td class="formfield"><input type="text" name="cost_6" value="<?php echo $plans['paid']->cost_6;?>" /></td>
+</tr>
+<tr>
+	<td class="formfield" style="text-align: right;">12 Months:</td>
+	<td class="formfield"><input type="text" name="cost_12" value="<?php echo $plans['paid']->cost_12;?>" /></td>
+</tr>
+<tr>
+	<td class="formlabel">Total Allowed Images:</td>
+	<td class="formfield"><input type="text" name="max_images1" value="<?php echo $plans['free']->max_images;?>" /></td>
+	<td class="formfield"><input type="text" name="max_images2" value="<?php echo $plans['paid']->max_images;?>" /></td>
+</tr>
+<tr>
+	<td class="formlabel">Max Upload Size:</td>
+	<td class="formfield"><input type="text" name="max_upload_size1" value="<?php echo $plans['free']->max_upload_size;?>" /> kb</td>
+	<td class="formfield"><input type="text" name="max_upload_size2" value="<?php echo $plans['paid']->max_upload_size;?>" /> kb</td>
+    <td class="formfield"><input type="text" name="max_upload_size3" value="<?php echo $plans['anonymous']->max_upload_size;?>" /> kb</td>
+</tr>
+<tr>
+	<td class="formlabel">Max Image Width:</td>
+	<td class="formfield"><input type="text" name="max_image_width1" value="<?php echo $plans['free']->max_image_width;?>" /></td>
+	<td class="formfield"><input type="text" name="max_image_width2" value="<?php echo $plans['paid']->max_image_width;?>" /></td>
+	<td class="formfield"><input type="text" name="max_image_width3" value="<?php echo $plans['anonymous']->max_image_width;?>" /></td>
+</tr>
+<tr>
+	<td class="formlabel">Max Image Height:</td>
+	<td class="formfield"><input type="text" name="max_image_height1" value="<?php echo $plans['free']->max_image_height;?>" /></td>
+	<td class="formfield"><input type="text" name="max_image_height2" value="<?php echo $plans['paid']->max_image_height;?>" /></td>
+	<td class="formfield"><input type="text" name="max_image_height3" value="<?php echo $plans['anonymous']->max_image_height;?>" /></td>
+</tr>
+<tr>
+	<td class="formlabel">Monthly Bandwidth:</td>
+	<td class="formfield"><input type="text" name="bandwidth1" value="<?php echo $plans['free']->bandwidth;?>" />mb</td>
+	<td class="formfield"><input type="text" name="bandwidth2" value="<?php echo $plans['paid']->bandwidth;?>" />mb</td>
+    <td class="formfield">&nbsp;</td>
+</tr>
+<tr>
+	<td class="formlabel">Total Storage:</td>
+	<td class="formfield"><input type="text" name="storage1" value="<?php echo $plans['free']->storage;?>" />mb</td>
+	<td class="formfield"><input type="text" name="storage2" value="<?php echo $plans['paid']->storage;?>" />mb</td>
+    <td class="formfield">&nbsp;</td>
+</tr>
+<tr>
+	<td class="formlabel">Auto Resize:</td>
+	<td class="formfield"><input type="checkbox" name="auto_resize1" value="1" <?php if( $plans['free']->auto_resize ) echo ' CHECKED ';?> /></td>
+	<td class="formfield"><input type="checkbox" name="auto_resize2" value="1" <?php if( $plans['paid']->auto_resize ) echo ' CHECKED ';?> /></td>
+	<td class="formfield"><input type="checkbox" name="auto_resize3" value="1" <?php if( $plans['anonymous']->auto_resize ) echo ' CHECKED ';?> /></td>
+</tr>
+<tr>
+	<td class="formlabel">Auto Convert To Jpeg:</td>
+	<td class="formfield"><input type="checkbox" name="auto_jpeg1" value="1" <?php if( $plans['free']->auto_jpeg ) echo ' CHECKED ';?> /></td>
+	<td class="formfield"><input type="checkbox" name="auto_jpeg2" value="1" <?php if( $plans['paid']->auto_jpeg ) echo ' CHECKED ';?> /></td>
+	<td class="formfield"><input type="checkbox" name="auto_jpeg3" value="1" <?php if( $plans['anonymous']->auto_jpeg ) echo ' CHECKED ';?> /></td>
+</tr>
+<tr>
+	<td class="formlabel">Jpeg Quality:</td>
+	<td class="formfield"><input type="text" name="jpeg_quality1" value="<?php echo $plans['free']->jpeg_quality;?>" /></td>
+	<td class="formfield"><input type="text" name="jpeg_quality2" value="<?php echo $plans['paid']->jpeg_quality;?>" /></td>
+	<td class="formfield"><input type="text" name="jpeg_quality3" value="<?php echo $plans['anonymous']->jpeg_quality;?>" /></td>
+</tr>
+<tr>
+	<td class="formlabel">Allow Renaming?</td>
+	<td class="formfield"><input type="checkbox" name="rename_images1" value="1" <?php if( $plans['free']->rename_images ) echo ' CHECKED ';?> /></td>
+	<td class="formfield"><input type="checkbox" name="rename_images2" value="1" <?php if( $plans['paid']->rename_images ) echo ' CHECKED ';?> /></td>
+    <td class="formfield">&nbsp;</td>
+</tr>
+<tr>
+	<td class="formlabel">Allow Image Resizing?</td>
+	<td class="formfield"><input type="checkbox" name="resize_images1" value="1" <?php if( $plans['free']->resize_images ) echo ' CHECKED ';?> /></td>
+	<td class="formfield"><input type="checkbox" name="resize_images2" value="1" <?php if( $plans['paid']->resize_images ) echo ' CHECKED ';?> /></td>
+    <td class="formfield">&nbsp;</td>
+</tr>
+<tr>
+	<td class="formlabel">Allow Image Rotating?</td>
+	<td class="formfield"><input type="checkbox" name="rotate_images1" value="1" <?php if( $plans['free']->rotate_images ) echo ' CHECKED ';?> /></td>
+	<td class="formfield"><input type="checkbox" name="rotate_images2" value="1" <?php if( $plans['paid']->rotate_images ) echo ' CHECKED ';?> /></td>
+    <td class="formfield">&nbsp;</td>
+</tr>
+<tr>
+	<td class="formlabel">Simultaneous Uploads:</td>
+	<td class="formfield"><input type="text" name="simultaneous_uploads1" value="<?php echo $plans['free']->simultaneous_uploads;?>" /></td>
+	<td class="formfield"><input type="text" name="simultaneous_uploads2" value="<?php echo $plans['paid']->simultaneous_uploads;?>" /></td>
+	<td class="formfield"><input type="text" name="simultaneous_uploads3" value="<?php echo $plans['anonymous']->simultaneous_uploads;?>" /></td>
+</tr>
+<tr>
+	<td class="formlabel">Thumbnails Per Page:</td>
+	<td class="formfield"><input type="text" name="images_per_page1" value="<?php echo $plans['free']->images_per_page;?>" /></td>
+	<td class="formfield"><input type="text" name="images_per_page2" value="<?php echo $plans['paid']->images_per_page;?>" /></td>
+    <td class="formfield">&nbsp;</td>
+</tr>
+<tr>
+	<td class="formlabel">Image Galleries:</td>
+	<td class="formfield"><input type="text" name="max_galleries1" value="<?php echo $plans['free']->max_galleries;?>" /></td>
+	<td class="formfield"><input type="text" name="max_galleries2" value="<?php echo $plans['paid']->max_galleries;?>" /></td>
+    <td class="formfield">&nbsp;</td>
+</tr>
+<tr>
+	<td class="formlabel">Email Images To Friends:</td>
+	<td class="formfield"><input type="text" name="email_friends1" value="<?php echo $plans['free']->email_friends;?>" /></td>
+	<td class="formfield"><input type="text" name="email_friends2" value="<?php echo $plans['paid']->email_friends;?>" /></td>
+    <td class="formfield">&nbsp;</td>
+</tr>
+<tr>
+	<td class="formlabel">Add Branding:</td>
+	<td class="formfield"><input type="checkbox" name="add_branding1" value="1" <?php if( $plans['free']->add_branding ) echo ' CHECKED ';?> /></td>
+	<td class="formfield"><input type="checkbox" name="add_branding2" value="1" <?php if( $plans['paid']->add_branding ) echo ' CHECKED ';?> /></td>
+	<td class="formfield"><input type="checkbox" name="add_branding3" value="1" <?php if( $plans['anonymous']->add_branding ) echo ' CHECKED ';?> /></td>
+</tr>
+<tr>
+    <td class="formlabel">Captions &amp; Description:</td>
+    <td class="formfield">
+        <select name="captions1">
+            <option value="none">No</option>
+            <option value="captions"<?php if( $plans['free']->captions == 'captions' ) echo ' selected="selected" '?>>Captions</option>
+            <option value="descriptions"<?php if( $plans['free']->captions == 'descriptions' ) echo ' selected="selected" '?>>Captions &amp; Descriptions</option>
+        </select>
+    </td>
+    <td class="formfield">
+        <select name="captions2">
+            <option value="none">No</option>
+            <option value="captions"<?php if( $plans['paid']->captions == 'captions' ) echo ' selected="selected" '?>>Captions</option>
+            <option value="descriptions"<?php if( $plans['paid']->captions == 'descriptions' ) echo ' selected="selected" '?>>Captions &amp; Descriptions</option>
+        </select>
+    </td>
+    <td class="formfield">&nbsp;</td>
+</tr>
+<tr>
+	<td class="formlabel">Show plans info on:</td>
+	<td class="formfield">
+		<input type="checkbox" name="home_page_show_plans" value="1" <?php if( $this->app->config->home_page_show_plans ) echo ' checked="checked" '?> /> Home Page?
+	</td>
+	<td class="formfield">
+		<input type="checkbox" name="upgrade_show_plans" value="1" <?php if( $this->app->config->upgrade_show_plans ) echo ' checked="checked" '?> /> Account Upgrade Page?
+	</td>
+    <td class="formfield">&nbsp;</td>
+</tr>
+
+<tr>
+    <td class="formheading" colspan="4">
+        Zip Uploads
+<?php if( !extension_loaded('zlib') ) { ?>
+        <h3>Oh dear, it appears your php does not have the zlib extension loaded.</h3>
+        The <a target="_blank" href="http://php.net/zlib">zlib extension</a> is required for zip uploads to function.
+<?php } ?>
+
+    </td>
+</tr>
+<tr>
+    <td class="formlabel">Allow Zip Uploads?</td>
+	<td class="formfield"><input type="checkbox" name="allow_zip_uploads1" value="1" <?php if( $plans['free']->allow_zip_uploads ) echo ' CHECKED ';?> /></td>
+	<td class="formfield"><input type="checkbox" name="allow_zip_uploads2" value="1" <?php if( $plans['paid']->allow_zip_uploads ) echo ' CHECKED ';?> /></td>
+	<td class="formfield"><input type="checkbox" name="allow_zip_uploads3" value="1" <?php if( $plans['anonymous']->allow_zip_uploads ) echo ' CHECKED ';?> /></td>
+</tr>
+
+<tr>
+    <td class="formlabel">Max Images Per Zip:<br />(0 = no limit)</td>
+	<td class="formfield"><input type="text" name="zip_uploads_max_images1" value="<?php echo $plans['free']->zip_uploads_max_images?>" /></td>
+	<td class="formfield"><input type="text" name="zip_uploads_max_images2" value="<?php echo $plans['paid']->zip_uploads_max_images?>" /></td>
+	<td class="formfield"><input type="text" name="zip_uploads_max_images3" value="<?php echo $plans['anonymous']->zip_uploads_max_images?>" /></td>
+</tr>
+
+<tr>
+    <td class="formlabel">Max Zip Filesize (mb):<br /> (0 = no limit)</td>
+	<td class="formfield"><input type="text" name="zip_uploads_max_size1" value="<?php echo $plans['free']->zip_uploads_max_size?>" /></td>
+	<td class="formfield"><input type="text" name="zip_uploads_max_size2" value="<?php echo $plans['paid']->zip_uploads_max_size?>" /></td>
+	<td class="formfield"><input type="text" name="zip_uploads_max_size3" value="<?php echo $plans['anonymous']->zip_uploads_max_size?>" /></td>
+</tr>
+
+<tr>
+	<td class="formlabel">&nbsp;</td>
+	<td class="formfield" style="text-align: center;"><input type="submit" name="update" value="Update Plans" /></td>
+	<td class="formfield">&nbsp;</td>
+	<td class="formfield">&nbsp;</td>
+</tr>
+</table>
+</form>

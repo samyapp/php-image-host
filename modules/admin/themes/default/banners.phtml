@@ -1,0 +1,141 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<div style="text-align: center;">
+<b>Manage Banners</b><br /><br />
+This page lets you add, edit, view and delete the banner ads displayed at the top and bottom of your site.
+Active banners are displayed in rotation at the top and bottom of each page of the site.
+</div>
+<br /><br />
+<?php
+
+if( $message != '' ){
+?>
+<div class="errors"><?php echo $message;?></div>
+<?php
+}
+
+if( !$ad ){
+
+	$ads = $rotator->getads();
+
+
+?>
+<form action="<?php echo $this->url('banners')?>" method="post">
+<table class="formtable" cellspacing="1" cellpadding="0" border="0" align="center">
+<tr>
+	<td class="formheading" colspan="2">Create A New Ad</td>
+</tr>
+<tr>
+	<td class="formlabel">Name:</td>
+	<td class="formfield"><input type="text" name="name" value="<?php echo htmlspecialchars($name);?>" />
+		<br />The name of the ad is just for your reference when viewing ads on this page.
+	</td>
+</tr>
+<!--<tr>
+	<td class="formlabel">Group:</td>
+	<td class="formfield"><input type="text" name="group" value="<?php echo htmlspecialchars($group);?>" />
+		<br />Enter a "group name" for this ad. Use "banner" for banners displayed at the top or bottom of the page,
+			"left" for ads displayed on the left of the page, and "right" for banners displayed in the right hand column.
+			<br /><br />If you are customizing the site, you can use different groups as required.
+	</td>
+</tr>-->
+<tr>
+	<td class="formlabel">Ad HTML:</td>
+	<td class="formfield"><textarea name="content" style="width: 400px; height: 80px;"><?php echo htmlspecialchars($content);?></textarea>
+		<br />Enter all the html required to display this ad. Most affiliate companies provide you with the
+			html to copy and paste here for their banners.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Live?</td>
+	<td class="formfield"><input type="checkbox" name="live" value="1" <?php if( $live == 1 ) echo ' CHECKED ';?> />
+		<br />Check this box to make this ad "Live". Only "Live" ads will be displayed on the site.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">&nbsp;</td>
+	<td class="formfield"><input type="submit" name="add" value="Add This Ad" />
+	</td>
+</tr>
+</table>
+</form>
+<?php if( count($ads) > 0 ){ ?>
+<form action="<?php echo $this->url('banners')?>" method="post">
+<table class="formtable" cellspacing="1" cellpadding="0" border="0" align="center">
+<tr>
+	<td colspan="2" class="formheading"><?php echo count($ads);?> Ad(s) In Database</td>
+</tr>
+<?php
+$tr = 1;
+foreach( $ads as $ad ){
+$tr = 1- $tr;
+?>
+<tr class="tr<?php echo $tr+1;?>">
+	<td><input type="checkbox" name="ids[]" value="<?php echo $ad->ad_id;?>" /></td>
+	<td style="text-align: center;"><b><?php echo htmlspecialchars($ad->name);?> (<?php echo $ad->views;?> views)</b>
+		[<a href="<?php echo $this->url('banners', 'a='.$ad->ad_id)?>">Edit</a>]
+		<?php echo $ad->live == 1 ? 'Live' : 'Not Live';?>
+		<br /><br />
+		<?php echo $ad->content;?>
+	</td>
+</tr>
+<?php
+}
+?>
+</table>
+<div style="text-align: center;">
+<br /><input type="submit" name="setlive" value="Set Selected Ads To Live" /><br />
+<br /><input type="submit" name="notlive" value="Set Selected Ads To Not Live" /><br />
+<br /><input type="submit" name="reset" value="Reset Selected Ad Views To 0" onClick="return confirm('Are you sure you want to reset the view count for the selected ads?');" />
+<br /><br /><input type="submit" name="delete" value="Delete Selected Ads" onClick="return confirm('Are you sure you want to delete the selected ads?');" />
+<br />
+</div>
+</form>
+<?php
+}
+
+}else{
+?>
+<form action="<?php echo $this->url('banners')?>?>" method="post">
+<input type="hidden" name="a" value="<?php echo $ad->ad_id;?>" />
+<table class="formtable" cellspacing="1" cellpadding="0" border="0" align="center">
+<tr>
+	<td class="formheading" colspan="2">Edit Ad "<?php echo htmlspecialchars($ad->name);?>"</td>
+</tr>
+<!--
+<tr>
+	<td class="formlabel">Group:</td>
+	<td class="formfield"><input type="text" name="group" value="<?php echo htmlspecialchars($ad->groupname);?>" />
+		<br />Enter a "group name" for this ad. Use "banner" for banners displayed at the top or bottom of the page,
+			"left" for ads displayed on the left of the page, and "right" for banners displayed in the right hand column.
+			<br /><br />If you are customizing the site, you can use different groups as required.
+	</td>
+</tr>
+ -->
+<tr>
+	<td class="formlabel">Ad HTML:</td>
+	<td class="formfield"><textarea name="content" style="width: 400px; height: 80px;"><?php echo htmlspecialchars($ad->content);?></textarea>
+		<br />Enter all the html required to display this ad. Most affiliate companies provide you with the
+			html to copy and paste here for their banners.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Live?</td>
+	<td class="formfield"><input type="checkbox" name="live" value="1" <?php if( $ad->live == 1 ) echo ' CHECKED ';?> />
+		<br />Check this box to make this ad "Live". Only "Live" ads will be displayed on the site.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">&nbsp;</td>
+	<td class="formfield"><input type="submit" name="update" value="Update This Ad" />
+	</td>
+</tr>
+</table>
+</form>
+<?php
+}

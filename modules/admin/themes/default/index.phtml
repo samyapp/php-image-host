@@ -1,0 +1,60 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<div style="margin-left: 50px; margin-top: 30px; margin-right: 20%;">
+<b>Welcome to your Php Image Host powered site's admin area.</b>
+<br /><br />
+Please choose an option from the navigation bar above, or click on one of the links below.
+<br /><br /><br />
+<a href="<?php echo $this->url('images')?>">Manage Uploaded Images</a>
+<br />
+You can view all of the images uploaded to this site, filtering the list by username, filesize,
+date uploaded, file format and image name. You can delete single images or multiple images with just
+a couple of clicks of the mouse.
+<br /><br />
+<a href="<?php echo $this->url('galleries')?>">Manage Image Galleries</a>
+<br />
+You can view all the galleries created by your members as a list, filtered by gallery name and username.
+You can browse any of the galleries, and delete one or more with a couple of clicks. Deleting all images
+in a gallery along with the gallery is available as an option.
+<br /><br />
+<a href="<?php echo $this->url('users')?>">View and Manage Site Users</a>
+<br />
+Your registered members can be listed according to criteria including name, username, email address,
+date joined and the date they last logged in. You can add new users manually if you need to, as well as
+edit existing ones.
+<br /><br />You can also upgrade free user accounts to paid accounts, and downgrade paid accounts to free.
+<br /><br />
+<a href="<?php echo $this->url('payments')?>">Paypal Payments</a>
+<br />
+This page lists all paypal payments made by your users for account upgrades. Payments can be filtered and
+sorted by various criteria.
+<br /><br />
+<a href="<?php echo $this->url('settings')?>">Site Settings</a>
+<br />
+The settings page is where you can set many of the configuration settings for this site, including
+admin username, password and email address, the name and url of the site, the folders to upload images
+to and more.
+<br /><br />
+<a href="<?php echo $this->url('ips')?>">Banned I.P. Addresses</a>
+<br />
+You can ban specific i.p addresses or ranges from accessing the member features on your site on this page.
+You can choose whether to use the script to check for banned user ip addresses, or to copy the i.p. addresses
+into your .htaccess file.
+<br /><br />
+<a href="<?php echo $this->url('plans')?>">Plan Details</a><br />
+This page lets you set the feature limits for both the paid and the free member accounts. You can also
+set the names for each of these accounts here.
+<br /><br />
+<a href="<?php echo $this->url('banners')?>">Banner Ad Manager</a><br />
+By default, a banner is displayed at the top and bottom of every page of the site. You can set the html
+for these banners on this page, as well as set individual banners to active or inactive.
+<br /><br />
+<a href="<?php echo $this->url('index', 'logout=1')?>" onClick="return confirm('Are you sure you want to logout of your account?');">Logout</a>
+<br />
+Click this link to logout of the admin area for this site.
+</div>

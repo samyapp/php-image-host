@@ -1,0 +1,52 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<div style="text-align: center;">
+<h3>Edit Home Page Content</h3>
+<p>
+	Select what you want to display on the home page of the site.
+</p>
+
+<form id="sidebarform" action="<?php echo $this->url('homepage')?>" method="post">
+	<div>Thumbnail Images</div>
+	<div>
+		Display <input size="4" type="text" name="home_page_images" value="<?php echo $this->app->config->home_page_images?>" />
+		<select name="home_page_which_images">
+			<option value="none">Don't display</option>
+			<option value="recent"<?php if( $this->app->config->home_page_which_images == 'recent' ) echo ' selected="selected" '?>>Latest</option>
+			<option value="random"<?php if( $this->app->config->home_page_which_images == 'random' ) echo ' selected="selected" '?>>Random</option>
+		</select>
+		checked public images.
+		<br /><br />
+		Width for thumbnails:<br />
+		 <input type="text" name="home_page_thumb_width" value="<?php echo $this->app->config->home_page_thumb_width?>" size="5" />
+	</div>
+
+	<div>
+		Display
+		<select name="home_page_single_image">
+			<option value="none">no image</option>
+			<option value="random"<?php if( $this->app->config->home_page_single_image == 'random' ) echo ' selected="selected" '?>>a random image</option>
+			<option value="recent"<?php if( $this->app->config->home_page_single_image == 'recent' ) echo ' selected="selected" '?>>the most recent image</option>
+		</select>
+		on the home page with a width of <input size="5" name="home_page_image_width" value="<?php echo $this->app->config->home_page_image_width?>" type="text" /> pixels.
+	</div>
+	<div>
+		<input type="checkbox" name="home_page_show_plans" value="1" <?php if( $this->app->config->home_page_show_plans ) echo ' checked="checked" '?> />
+		Show plan / account type details on the home page.
+	</div>
+    <div>
+        <h3>Show news on home page?</h3>
+        <input type="text" style="width: 20px;" name="homepage_news_items" value="<?php echo $this->app->config->homepage_news_items?>" />
+        <br />Enter the maximum number of (published) news items to display on the home page. Enter 0 for none. Enter -1 To display all
+        current (non-archived) published news items.
+    </div>
+	<div>
+		<input type="submit" name="update" value="Save Changes" />
+	</div>
+</form>
+</div>

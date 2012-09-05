@@ -1,0 +1,322 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php
+echo $this->_t('Images Content');
+?>
+<?php
+if( $message != '' ){
+?>
+<div class="message"><?php echo $message;?></div>
+<?php
+}
+
+// any error messages? display them
+
+if( count($images->errors) > 0 ){
+?>
+<div class="errors"><?php echo $this->t('Please correct the following errors:')?><br /><br />
+<?php echo join("<br />\n", $images->errors);?></div>
+<?php
+}
+
+if( count($imgs) > 0 ){
+
+?>
+<form action="<?php echo $this->url('myimages')?>" method="post">
+<div class="imagelist">
+<?php
+
+	// if the user has uploaded more images than their account allows (only possible if they previously
+	// had a paid account which expired, or the admin has reduced the number of images allowed), then display a message
+
+	if( $user->images > $user->max_images && $user->max_images > 0 ){
+?>
+<div class="errors">
+<?php echo $this->t('You are currently exceeding the uploaded image allowance for your account.')?>
+<br /><?php echo $this->t('Your')?> <?php echo $this->t($user->type_name)?> <?php echo $this->t('account allows you to have')?>
+<?php echo $user->max_images;?> <?php echo $this->t('images at a time.')?>
+<br /><?php echo $this->t('Please delete some images or')?>
+<a href="<?php echo $this->url('upgrade')?>"><?php echo $this->t('upgrade your account')?></a>.
+</div>
+<?php
+	}
+
+	// now list all their images, x to a page, with options to order by name or date uploaded.
+	// images are displayed with a thumbnail (click for full size), and urls to use to link to the image.
+
+?>
+<table class="imagetable" cellspacing="1" cellpadding="0" border="0" align="center">
+<tr>
+	<td class="imagetitle" colspan="3" style="text-align: center;">
+	<?php echo $this->t('Images in order of')?>
+	<a href="<?php echo $this->url('myimages','o=name&od=asc&g='.$g)?>"><?php echo $this->t('Name (a-z)')?></a>
+	| <a href="<?php echo $this->url('myimages', 'o=name&od=desc&g='.$g)?>"><?php echo $this->t('Name (z-a)')?></a>
+	| <a href="<?php echo $this->url('myimages', 'o=uploaded&od=desc&g='.$g)?>"><?php echo $this->t('Newest first')?></a>
+	| <a href="<?php echo $this->url('myimages', 'o=uploaded&od=asc&g='.$g)?>"><?php echo $this->t('Oldest first')?></a>
+<?php
+	if( count($user->galleries) > 0 ){
+?>
+<br />
+<?php echo $this->t('Galleries:')?>
+<?php
+		$ng = 0;
+		foreach( $user->galleries as $id=>$gal ){
+//			if(  $ng < count($user->galleries)) echo ', ';
+			$ng++;
+?><a href="<?php echo $this->url('myimages', 'g='.$id)?>"><?php echo $gal->gallery_name;?></a><?php
+			echo ', ';
+		}
+?><a href="<?php echo $this->url('myimages')?>"><?php echo $this->t('All Images')?></a><?php
+	}
+?>
+	</td>
+</tr>
+<tr>
+	<td class="imagetitle">
+	<script language="JavaScript" type="text/javascript">
+<!--
+document.writeln('<input type="checkbox" onClick="check(this.form, this.checked);" />');
+//-->
+</script>
+<noscript>&nbsp;</noscript>
+	</td>
+	<td class="imagetitle" colspan="2" style="text-align: center;">
+		<?php echo $this->t('Images')?>
+		<?php echo $first+1;?> 
+		<?php echo $this->t('to')?>
+		<?php echo $last;?>
+		<?php echo $this->t('of')?>
+		<?php echo $user->images;?><?php if( $gallery ) echo ' '.$this->t('in gallery').' "'.$gallery->gallery_name.'"';?>.
+		<?php echo $this->t('Page')?> <?php echo $page;?>
+		<?php echo $this->t('of')?> <?php echo $totalpages;?>
+		<br />
+<?php 
+	if( $page > 1 ){
+?>
+		<div style="float: left;">
+			<a style="text-decoration: none;"  href="<?php echo str_replace('{page}', ($page-1), $purl);?>">&lt; <?php echo $this->t('Previous')?></a>
+		</div>
+<?php
+	}
+	if( $page < $totalpages ){
+?>
+		<div style="float: right;">
+			<a style="text-decoration: none;" href="<?php echo str_replace('{page}',($page+1), $purl);?>"><?php echo $this->t('Next')?> &gt;</a>
+		</div>
+<?php
+	}
+?>
+	</td>
+</tr>
+<?php
+$tr = 1;
+foreach( $imgs as $i ){
+?>
+<tr class="tr<?php echo ($tr+1);?>">
+	<td class="tdcheck"><input type="checkbox" name="ids[]" value="<?php echo $i->image_id;?>" <?php if( in_array($i->image_id, $ids) ) echo ' CHECKED ';?>/></td>
+	<td class="tdthumb">
+	<a onClick="return si('<?php echo $i->image_url;?>', <?php echo $i->width;?>, <?php echo $i->height;?>);"  target="_blank" href="<?php echo $i->image_url;?>"><img border="0" class="thumb" src="<?php echo $i->thumb_url?>" alt="" /></a>
+	<br />
+	(<?php echo $i->width.'x'.$i->height;?>)
+	<?php echo number_format($i->filesize/1024, 1).'k';?>
+	<br />
+	<?php echo $this->t('Bandwidth:')?>
+<?php 
+	if( $i->bandwidthr > (1024*1024) ){
+		echo $i->bandwidth.'mb';
+	}elseif( $i->bandwidthk > (1024*1024) ){
+		echo number_format($i->bandwidthr/(1024*1024*1024),2).'gb';
+	}else{
+		echo $i->bandwidthk.'k';
+	}
+?>
+<br />
+<a href="<?php echo str_replace('{page}',$page,$purl).'&i='. $i->image_id.'&setpublic='.(1 - $i->public)?>"><?php echo $i->public ? $this->t('Public (change)') : $this->t('Private (change)')?></a>
+<?php if( $user->resize_images || $user->rename_images || $user->rotate_images){ ?>
+		<div class="infolabel" style="text-align: center;">
+<?php if( $user->rename_images ){ ?>
+			[<a href="<?php echo $this->url('rename', 'i='.$i->image_id)?>"><?php echo $this->t('Rename')?></a>]
+<?php } ?>
+<?php if( $user->resize_images ){ ?>
+			[<a href="<?php echo $this->url('resize', 'i='.$i->image_id)?>"><?php echo $this->t('Resize')?></a>]
+<?php } ?>
+<?php if( $user->rotate_images ){ ?>
+			[<a href="<?php echo $this->url('rotate','i='.$i->image_id)?>"><?php echo $this->t('Rotate')?></a>]
+<?php } ?>
+		</div>
+<?php } ?>
+	</td>
+	<td class="tdinfo">
+	<b><a onClick="return si('<?php echo $i->image_url;?>', <?php echo $i->width;?>, <?php echo $i->height;?>);" target="_blank" href="<?php echo $i->image_url;?>"><?php echo $i->name.'.'.$i->type;?></a></b>
+	<br />
+		<div class="infolabel">URL</div>
+		<div class="infotext"><input onFocus="this.select();" class="urlinput" type="text" value="<?php echo $i->image_url;?>" /></div>
+<?php if( $this->app->config->hotlink_images ){ ?>
+		<div class="infolabel">HTML &lt;img&gt;</div>
+		<div class="infotext">
+			<input onFocus="this.select();" class="urlinput" type="text" value="<?php echo htmlentities('<img src="'.$i->image_url.'" alt="image hosting by '.$this->app->config->siteurl.'" />');?>" />
+		</div>
+		<div class="infolabel"><?php echo $this->t('BB Code')?></div>
+		<div class="infotext">
+			<input onFocus="this.select();" class="urlinput" type="text" value="[img]<?php echo $i->image_url;?>[/img]" />
+		</div>
+<?php } ?>
+<?php if( $this->app->config->hotlink_thumbnails ){ ?>
+		<div class="infolabel"><?php echo $this->t('Clickable Thumb')?></div>
+		<div class="infotext">
+<?php
+		$link = $this->url('browse', 'view=1&id='.$i->image_id);
+?>
+			<input onFocus="this.select();" class="urlinput" type="text" value="<?php echo htmlentities('<a href="'.$link.'"><img border="0" src="'.$i->thumb_url.'" alt="image hosting by '.$this->app->config->siteurl.'" /></a>')?>" />
+		</div>
+<?php } ?>
+		<div class="infolabel"><?php echo $this->t('Uploaded on the')?> <?php echo date('jS F Y', strtotime($i->uploaded));?></div>
+<?php if( $i->gallery_id != 0 ){?>
+	<b><?php echo $this->t('In Gallery:')?> <a href="<?php echo $this->url('myimages', 'g='.$i->gallery_id)?>"><?php echo $i->gallery_name;?></a></b>
+	[<a target="_blank" href="<?php echo $this->url('gallery','g='.$i->gallery_name.'&u='.$user->username)?>"><?php echo $this->t('View')?></a>]
+<?php } ?>
+	</td>
+</tr>
+<?php
+	$tr = 1 - $tr;
+}
+?>
+<tr>
+	<td class="imagetitle">
+	<script language="JavaScript" type="text/javascript">
+<!--
+document.writeln('<input type="checkbox" onClick="check(this.form, this.checked);" />');
+//-->
+</script>
+<noscript>&nbsp;</noscript>
+	</td>
+	<td class="imagetitle" colspan="2" style="text-align: center;">
+<?php
+	if( $page > 1 ){
+?>
+		<div style="float: left;">
+			<a style="text-decoration: none;"  href="<?php echo str_replace('{page}', ($page-1), $purl);?>">&lt; <?php echo $this->t('Previous')?></a>
+		</div>
+<?php
+	}
+	if( $page < $totalpages ){
+?>
+		<div style="float: right;">
+			<a style="text-decoration: none;" href="<?php echo str_replace('{page}',($page+1), $purl);?>"><?php echo $this->t('Next')?> &gt;</a>
+		</div>
+<?php
+	}
+?>
+
+	<br />
+		<?php echo $this->t('Images')?>
+		<?php echo $first+1;?>
+		<?php echo $this->t('to')?>
+		<?php echo $last;?>
+		<?php echo $this->t('of')?>
+		<?php echo $user->images;?>
+		<?php if( $gallery ) echo $this->t('in gallery').' "'.$gallery->gallery_name.'"';?>.
+		<?php echo $this->t('Page')?> <?php echo $page;?>
+		<?php echo $this->t('of')?> <?php echo $totalpages;?>
+	</td>
+</tr>
+<?php if( $user->email_friends > 0 ){ ?>
+<tr>
+	<td colspan="3" class="imagetitle"><a name="email"></a>&nbsp;</td>
+</tr>
+<tr>
+	<td class="imagetitle">&nbsp;</td>
+	<td class="imagetitle" colspan="2">
+		<b><?php echo $this->t('Email The Selected Images To Your Friends!')?></b>
+	</td>
+</tr>
+<tr class="tr1">
+	<td class="tdcheck">&nbsp;</td>
+	<td class="tdinfo" style="text-align: right;"><?php echo $this->t('Friends Email:')?></td>
+	<td class="tdinfo">
+<?php
+	for( $i = 0; $i < $user->email_friends; $i++){
+?>
+		<input type="text" name="to[]" value="<?php echo htmlspecialchars($emails[$i]);?>" class="urlinput" /><br />
+<?php
+	}
+?>
+	<br />
+<?php if( $user->email_friends > 1 ){ ?>
+<?php echo $this->t('Enter the email address of each friend you want to send these images to in one of the boxes above.')?>
+<?php }else{ ?>
+<?php echo $this->t('Enter the email address of the friend you want to send these images to.')?>
+<?php } ?>
+<br /><?php echo $this->t('We respect your privacy. We do not store the email addresses submitted via this form.')?>
+	</td>
+</tr>
+<tr class="tr1">
+	<td class="tdcheck">&nbsp;</td>
+	<td class="tdthumb" style="text-align: right;"><?php echo $this->t('Short Message')?><br />(<?php echo $this->t('max')?> 255 <?php echo $this->t('characters')?>)</td>
+	<td class="tdinfo"><textarea name="message" class="urlinput" style="height: 60px;"><?php echo htmlspecialchars($msg);?></textarea></td>
+</tr>
+<tr class="tr1">
+	<td class="tdcheck">&nbsp;</td>
+	<td class="tdthumb">&nbsp;</td>
+	<td class="tdinfo"><input type="submit" name="send" value="<?php echo $this->t('Email The Selected Images')?>" /></td>
+</tr>
+<?php 
+}
+
+if( count($user->galleries) > 0 ){
+?>
+<tr>
+	<td class="imagetitle" colspan="3">&nbsp;</td>
+</tr>
+<tr>
+	<td class="imagetitle" colspan="3"><?php echo $this->t('Add The Selected Images To One Of Your Galleries')?></td>
+</tr>
+<tr class="tr1">
+	<td class="tdcheck">&nbsp;</td>
+	<td class="tdthumb">&nbsp;</td>
+	<td class="tdinfo">
+		<select name="gallery_id">
+			<option value="0"><?php echo $this->t('No Gallery')?></option>
+<?php
+	foreach( $user->galleries as $id=>$g ){
+		echo "<option value=\"$id\">{$g->gallery_name}</option>\n";
+	}
+?>
+		</select>
+		[<a href="<?php echo $this->url('galleries')?>"><?php echo $this->t('Manage Galleries')?></a>]<br />
+		<input type="submit" name="addtogallery" value="<?php echo $this->t('Add Selected Images To This Gallery')?>" />
+	</td>
+</tr>
+<?php
+}
+?>
+<tr>
+	<td class="imagetitle" colspan="3">&nbsp;</td>
+</tr>
+<tr>
+	<td class="imagetitle" colspan="3"><?php echo $this->t('Remove The Selected Images From Your Account')?></td>
+</tr>
+<tr class="tr1">
+	<td class="tdcheck">&nbsp;</td>
+	<td class="tdthumb">&nbsp;</td>
+	<td class="tdinfo">
+		<input type="submit" name="delete" value="<?php echo $this->t('Delete The Selected Images')?>" onClick="return confirm('<?php echo $this->t("Are you sure you want to delete the selected images?")?>');" />
+	</td>
+</tr>
+</table>
+</div>
+</form>
+<?php
+
+}else{
+
+	// if the user hasn't uploaded any images ,display a message telling them this.
+
+	echo $this->_t('No Images Content');
+
+}

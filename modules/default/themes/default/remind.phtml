@@ -1,0 +1,41 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php echo $this->_t('Remind Content')?>
+<?php if( $remindererror != '' ){?>
+<div class="errors"><?php echo $remindererror;?></div>
+<?php  }?>
+<form name="reminderform" action="<?php echo $this->url('remind')?>" method="post">
+<div class="memberform">
+<table align="center" class="membertable" cellspacing="1" cellpadding="0" border="0">
+<tr>
+	<td colspan="2" class="memberheading"><?php echo $this->t('Request Password Reminder')?></td>
+</tr>
+<tr>
+	<td class="memberlabel"><b><?php echo $this->t('Either')?></b> <?php echo $this->t('Username:')?></td>
+	<td class="memberfield"><input class="memberinput" type="text" name="username" value="<?php echo htmlspecialchars($username);?>" />
+		<br /><?php echo $this->t('Enter the username you chose when you signed up.')?>
+	</td>
+</tr>
+<tr>
+	<td class="memberlabel"><b><?php echo $this->t('Or')?></b> <?php echo $this->t('Email:')?></td>
+	<td class="memberfield"><input class="memberinput" type="text" name="email" value="<?php echo htmlspecialchars($email);?>" />
+		<br /><?php echo $this->t('Enter the email address you entered when you signed up.')?>
+	</td>
+</tr>
+<tr>
+	<td class="memberlabel">&nbsp;</td>
+	<td class="memberfield"><input class="memberinput" type="submit" name="remind" value="<?php echo $this->t('Send Password Reminder')?>" /></td>
+</tr>
+</table>
+</div>
+</form>
+<script language="JavaScript" type="text/javascript">
+<!--
+document.forms.reminderform['username'].focus();
+//-->
+</script>

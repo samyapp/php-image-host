@@ -1,0 +1,131 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<div style="text-align: center;">
+<b>Manage Galleries</b><br /><br />
+This page lets you view and delete the galleries created by your users.
+Use the form on the left to filter
+which galleries are displayed.
+<br /><br />
+<table border="0" cellspacing="0" cellpadding="10" width="95%">
+<tr>
+<td style="text-align: center; vertical-align: top; width: 150px; color: #555555; font-weight: bold;">
+<div style="padding: 5px; border: 2px solid #555555; ">
+<div style="border-bottom: 2px solid #555555; font-weight: bold;text-align: center;padding: 3px;margin-bottom: 5px;">Search Images</div>
+<a href="<?php echo $this->url('galleries')?>">List All Galleries</a>
+<br /><br />
+<form action="<?php echo $this->url('galleries')?>" method="post">
+Gallery Name Like<br />
+<input type="text" name="name" value="<?php echo htmlspecialchars($name);?>" />
+<br />(Use * as wildcard)
+<br /><br />Username<br />
+<input type="text" name="username" value="<?php echo htmlspecialchars($username);?>" />
+<br />Use * as wildcard.
+<br /><br />Order By<br />
+<select name="orderby">
+	<option value="url">URL</option>
+	<option value="name"<?php if( $orderby =='name' ) echo ' SELECTED ';?>>Name</option>
+	<option value="username"<?php if( $orderby =='username' ) echo ' SELECTED ';?>>Username</option>
+</select>
+<br />
+<select name="orderdir">
+	<option value="asc">ascending</option>
+	<option value="desc"<?php if( $orderdir == 'desc' ) echo ' SELECTED ';?>>descending</option>
+</select>
+<br /><br />Display<br />
+<input style="width: 40px;" type="text" name="perpage" value="<?php echo $perpage;?>" />
+<br />Per Page
+<br /><br /><input type="submit" value="List Galleries" />
+</form>
+</div>
+</td>
+<td style="text-align: center; vertical-align: top;">
+
+<div class="errors">
+<?php if( $message != '' ) echo $message."<br /><br />";?>
+<?php if( count($errors) > 0 ) echo join("<br />", $errors)."<br /><br />";?>
+<?php echo $numgalleries;?> galleries matched your criteria.
+</div>
+<?php
+if( $numgalleries > 0 ){
+?>
+Listing galleries <?php echo ($first+1).' to '.$last.' of '.$numgalleries.'.';?><br /><br />
+Page <?php echo $page.' of '.$numpages.'.';?><br /><br />
+View Page:
+<?php
+	for( $i = 1; $i <= $numpages; $i++){
+?>
+<a href="<?php echo str_replace('{page}', $i,$pageurl);?>"><?php echo $i;?></a>
+<?php
+	}
+?>
+<br /><br />
+<form name="iform" id="iform" action="<?php echo $this->url('galleries')?>" method="post">
+<input type="hidden" name="name" value="<?php echo htmlspecialchars($name);?>" />
+<input type="hidden" name="username" value="<?php echo htmlspecialchars($username);?>" />
+<input type="hidden" name="perpage" value="<?php echo $perpage;?>" />
+<input type="hidden" name="orderby" value="<?php echo $orderby;?>" />
+<input type="hidden" name="orderdir" value="<?php echo $orderdir;?>" />
+<table class="formtable" cellspacing="1" cellpadding="0" border="0" align="center" style="background-color: #555555; width: 95%;">
+<tr>
+	<th>&nbsp;</th>
+	<th>Gallery</th>
+	<th>Username</th>
+	<th>Images</th>
+	<th>URL</th>
+</tr>
+<?php
+	$tr = 0;
+	foreach( $gals as $i ){
+?>
+<tr class="tr<?php echo ($tr+1);?>">
+	<td style="width: 24px; text-align: center;">
+		<input type="checkbox" name="ids[]" value="<?php echo $i->gallery_id;?>" />
+	</td>
+	<td><a target="_blank" href="<?php echo $this->url('gallery','u='.$i->username.'&g='.$i->gallery_name, 'default')?>"><?php echo $i->gallery_name;?></a></td>
+	<td style="text-align: center;">
+		<a href="<?php echo $this->url('galleries', 'username='.htmlspecialchars($i->username))?>&perpage=<?php echo $perpage;?>"><?php echo $i->username;?></a>
+		[<a href="<?php echo $this->url('users', 'userid='.$i->user_id)?>">View</a>]
+	</td>
+	<td><a href="<?php echo $this->url('images', 'checked=-1&username='.$i->username)?>&gallery=<?php echo $i->gallery_name;?>"><?php echo $i->images;?></a></td>
+	<td><input type="text" class="gurlinput" value="<?php echo htmlspecialchars($this->url('gallery','u='.$i->username.'&g='.$i->gallery_name))?>" onFocus="this.select();" /></td>
+</tr>
+<?php
+		$tr = 1 - $tr;
+	}
+?>
+</table>
+<br clear="all" />
+<input type="button" onClick="check(this.form,true);" value="Select All" />
+<input type="button" onClick="check(this.form,false);" value="Select None" />
+<input type="button" onClick="invert(this.form);" value="Invert Selection" />
+<noscript>
+<br />The buttons above require javascript to be enabled in order to function.
+</noscript>
+<br /><br />
+<input type="submit" name="delete" value="Delete Selected Galleries" onClick="return confirm('Are you sure you want to delete all the selected galleries?');" />
+<br /><input type="checkbox" name="deleteimages" value="1" /> and delete all the images in the galleries.
+</form>
+<br />
+View Page:
+<?php
+	for( $i = 1; $i <= $numpages; $i++){
+?>
+<a href="<?php echo str_replace('{page}', $i,$pageurl);?>"><?php echo $i;?></a>
+<?php
+	}
+?>
+<br /><br />
+Page <?php echo $page.' of '.$numpages.'.';?><br /><br />
+Listing galleries <?php echo ($first+1).' to '.$last.' of '.$numgalleries.'.';?>
+<?php
+}
+?>
+</td>
+</tr>
+</table>
+</div>

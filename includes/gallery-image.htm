@@ -1,0 +1,34 @@
+<html>
+<head>
+<title>{sitename} Image Gallery "{gallery_name}" by {username} - Viewing image {image_name}</title>
+<link rel="stylesheet" type="text/css" href="{siteurl}gallery-styles.css" />
+<script language="JavaScript" type="text/javascript" src="{siteurl}js.js"></script>
+</head>
+<body>
+<div class="topbanner">{bannerad}</div>
+<div class="fit">
+	<div class="galleryname">
+		<a href="{gallery_url}">{gallery_name}</a> :: {image_name}
+	</div>
+	<div class="galleryintro">{gallery_intro}</div>
+	<br clear="all" />
+	<previmage><div class="prev"><a href="{previmageurl}">&lt;&lt; Previous Image</a></div></previmage>
+	<nextimage><div class="next"><a href="{nextimageurl}">Next Image &gt;&gt;</a></div></nextimage>
+	<br clear="all" />
+	<div class="imageholder=">
+		<a target="_blank" href="{image_url}" onClick="return si('{image_url}', {image_width}, {image_height});"><img class="image" border="0" src="{image_url}" style="width: {gallery_width}; height: {gallery_height};" alt="click to enlarge" /></a>
+	</div>
+	<br clear="all" />
+	<div class="imageinfo">
+		{image_name} ({image_width}x{image_height}) {image_size} bytes.
+	</div>
+	<previmage><div class="prev"><a href="{previmageurl}">&lt;&lt; Previous Image</a></div></previmage>
+	<nextimage><div class="next"><a href="{nextimageurl}">Next Image &gt;&gt;</a></div></nextimage>
+	<br clear="all" />
+	<div class="footer">
+		 <a href="{siteurl}">Free Image Hosting from {sitename}</a>.
+	</div>
+</div>
+<div class="bottombanner">{bannerad}</div>
+</body>
+</html>

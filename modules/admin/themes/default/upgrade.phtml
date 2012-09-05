@@ -1,0 +1,56 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php if( $upgraded ) { ?>
+<h2>Your database was successfully upgraded!</h2>
+<?php }else if( $errors ) { ?>
+<h2>Errors Occurred Updating Your Database</h2>
+<p>The following error occurred:</p>
+<p><?php echo $error?></p>
+<p>
+    <h3>You can try executing the following SQL statements manually instead</h3>
+    <pre>
+    <?php echo htmlspecialchars($upgrade_sql)?>
+    </pre>
+</p>
+<?php }else { ?>
+<h2>Upgrade Database to Latest Version</h2>
+<p>You can use this page to update your database to the latest version.
+</p>
+<p>Your current version is <b><?php echo $current_version?></b></p>
+<p>Your latest version is <b><?php echo $new_version?></b></p>
+<p>
+    <?php if( version_compare($current_version, $new_version) == 0 ) {?>
+        <b>Your database appears to be the latest version.</b> You can still run
+        the update script in case you have manually modified the database tables
+        and need to set them up again.
+    <?php } else if( version_compare($current_version , $new_version ) < 0 ) { ?>
+        <b>Your database version is out of date. You should update it with this
+        script.</b>
+    <?php } ?>
+</p>
+<p>If you want to update your database please follow the steps below:</p>
+<ol>
+    <li><b>Backup your database</b> Hopefully you make regular backups of your
+    database anyway. You should certainly make a backup using whatever method
+    you prefer before using this script to update it.
+    </li>
+    <li>Click the button below to update the database structure.
+    <br /><br />
+    <form action="<?php echo $this->url('upgrade')?>" method="post">
+        <input type="submit" name="upgrade" value="Upgrade Database Version" />
+    </form>
+    </li>
+</ol>
+<h2>Manually Update Your Database</h2>
+<p>
+If you prefer you can manually update your database by executing the following SQL statements:
+</p>
+<pre>
+    <?php echo htmlspecialchars($upgrade_sql)?>
+</pre>
+<?php } ?>

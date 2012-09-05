@@ -1,0 +1,36 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php
+echo $this->_t('Contact Content');
+?>
+<form action="<?php echo $this->url('contact')?>" method="post">
+<div class="contactform">
+<table class="contacttable" cellspacing="0" cellpadding="0" border="0">
+<tr>
+	<td class="contactlabel"><?php echo $this->t('Your Name:')?></td>
+	<td class="contactfield"><input class="contactinput" type="text" name="name" value="<?php echo htmlspecialchars($name);?>" /></td>
+</tr>
+<tr>
+	<td class="contactlabel"><?php echo $this->t('Your Email:')?></td>
+	<td class="contactfield"><input class="contactinput" type="text" name="email" value="<?php echo htmlspecialchars($email);?>" /></td>
+</tr>
+<tr>
+	<td class="contactlabel"><?php echo $this->t('Subject:')?></td>
+	<td class="contactfield"><input class="contactinput" type="text" name="subject" value="<?php echo htmlspecialchars($subject);?>" /></td>
+</tr>
+<tr>
+	<td class="contactlabel" style="vertical-align: top"><?php echo $this->t('Message:')?></td>
+	<td class="contactfield"><textarea class="contactmessage" name="message"><?php echo htmlspecialchars($message);?></textarea></td>
+</tr>
+<tr>
+	<td class="contactlabel">&nbsp;</td>
+	<td class="contactfield"><input type="submit" name="submit" value="<?php echo $this->t('Submit Message')?>" /></td>
+</tr>
+</table>
+</div>
+</form>

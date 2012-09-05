@@ -1,0 +1,26 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php
+echo $this->_t('Rename Image Content');
+if( $renamed ) {
+	echo $this->_t('Image Renamed Content');
+}
+?>
+<form action="<?php echo $this->url('rename')?>" method="post">
+<input type="hidden" name="i" value="<?php echo $iid;?>" />
+<div class="renameform">
+	<div class="renamethumb"><a onClick="return si('<?php echo $image->image_url;?>', <?php echo $image->width;?>, <?php echo $image->height;?>);"  target="_blank" href="<?php echo $image->image_url;?>"><img border="0" class="thumb" src="<?php echo $image->thumb_url;?>" alt="" /></a></div>
+	<div class="renamefields">
+		<?php echo $this->t('Rename')?> "<?php echo $image->name.'.'.$image->type;?>" <?php echo $this->t('to')?>:
+		<br />
+		<input class="renamename" type="text" name="name" />
+		<br /><input class="renamesubmit" type="submit" name="rename" value="<?php echo $this->t('Rename Image')?>" />
+	</div>
+	<br clear="all" />
+</div>
+</form>

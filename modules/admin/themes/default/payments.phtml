@@ -1,0 +1,152 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<script language="JavaScript" type="text/javascript">
+<!--
+function sp(pid){
+	url = 'showpayment.php?p='+pid;
+	win = window.open(url, '_blank', 'width=400,height=600,scrollbars=yes,toolbar=no');
+	return false;
+}
+//-->
+</script>
+<div style="text-align: center;">
+<b>Paypal Payments</b><br /><br />
+This page lets you view and delete the payments you have received from PayPal.
+Use the form on the left to filter
+which payments are displayed.
+<br /><br />
+<table border="0" cellspacing="0" cellpadding="10" width="95%">
+<tr>
+<td style="text-align: center; vertical-align: top; width: 150px; color: #555555; font-weight: bold;">
+<div style="padding: 5px; border: 2px solid #555555; ">
+<div style="border-bottom: 2px solid #555555; font-weight: bold;text-align: center;padding: 3px;margin-bottom: 5px;">Search Payments</div>
+<form action="<?php echo $this->url('payments')?>" method="post">
+Username<br />
+<input type="text" name="username" value="<?php echo htmlspecialchars($username);?>" />
+<br /><br />User Email<br />
+<input type="text" name="email" value="<?php echo htmlspecialchars($email);?>" />
+<br /><br />PayPal Email<br />
+<input type="text" name="paypalemail" value="<?php echo htmlspecialchars($paypalemail);?>" />
+<br /><br />PayPal Txn Id#<br />
+<input type="text" name="txnid" value="<?php echo htmlspecialchars($txnid);?>" />
+<br /><br />Dated Between<br />
+<input type="text" name="fromdate" value="<?php echo htmlspecialchars($fromdate);?>" />
+<br />and<br />
+<input type="text" name="todate" value="<?php echo htmlspecialchars($todate);?>" />
+<br />(enter dates in format yyyy-mm-dd).
+<br /><br />Order By<br />
+<select name="orderby">
+<?php
+	foreach( $payments->orderbys as $n=>$v ){
+		$sel = $n == $orderby ? ' SELECTED ' : '';
+		echo "<option value=\"$n\"$sel>$v</option>\n";
+	}
+?>
+</select>
+<br />
+<select name="orderdir">
+	<option value="asc">ascending</option>
+	<option value="desc"<?php if( $orderdir == 'desc' ) echo ' SELECTED ';?>>descending</option>
+</select>
+<br /><br />Display<br />
+<input style="width: 40px;" type="text" name="perpage" value="<?php echo $perpage;?>" />
+<br />Per Page
+<br /><br /><input type="submit" value="List Payments" />
+</form>
+</div>
+</td>
+<td style="text-align: center; vertical-align: top;">
+
+<div class="errors">
+<?php if( $message != '' ) echo $message."<br /><br />";?>
+<?php if( count($errors) > 0 ) echo join("<br />", $errors)."<br /><br />";?>
+<?php echo $numpayments;?> payment(s) matched your criteria.
+</div>
+<?php
+if( $numpayments > 0 ){
+?>
+Listing PayPal Payments <?php echo ($first+1).' to '.$last.' of '.$numpayments.'.';?><br /><br />
+Page <?php echo $page.' of '.$numpages.'.';?><br /><br />
+View Page:
+<?php
+	for( $i = 1; $i <= $numpages; $i++){
+?>
+<a href="<?php echo str_replace('{page}', $i,$pageurl);?>"><?php echo $i;?></a>
+<?php
+	}
+?>
+<br /><br />
+<form name="iform" id="iform" action="<?php echo $this->url('payments')?>" method="post">
+<input type="hidden" name="email" value="<?php echo htmlspecialchars($email);?>" />
+<input type="hidden" name="paypalemail" value="<?php echo htmlspecialchars($paypalemail);?>" />
+<input type="hidden" name="txnid" value="<?php echo htmlspecialchars($txnid);?>" />
+<input type="hidden" name="username" value="<?php echo htmlspecialchars($username);?>" />
+<input type="hidden" name="orderby" value="<?php echo $orderby;?>" />
+<input type="hidden" name="orderdir" value="<?php echo $orderdir;?>" />
+<input type="hidden" name="perpage" value="<?php echo htmlspecialchars($perpage);?>" />
+<table class="formtable" cellspacing="1" cellpadding="0" border="0" align="center" style="background-color: #555555;">
+<tr>
+	<th>&nbsp;</th>
+	<th>Transaction Id#</th>
+	<th>From (PP Email)</th>
+	<th>Username</th>
+	<th>User Email</th>
+	<th>Date</th>
+	<th>Amount</th>
+</tr>
+<?php
+	$tr = 0;
+	foreach( $pays as $p ){
+?>
+<tr class="tr<?php echo ($tr+1);?>">
+	<td>
+		<input type="checkbox" name="ids[]" value="<?php echo $p->payment_id;?>" />
+	</td>
+	<td style="text-align: left;">
+		<a onClick="return sp(<?php echo $p->payment_id;?>);" target="_blank" href="<?php echo $this->url('showpayment', 'p='.$p->payment_id)?>"><?php echo htmlspecialchars($p->txn_id);?></a>
+	</td>
+	<td style="text-align: center;"><?php echo htmlspecialchars($p->paypal_email);?></td>
+	<td><a href="<?php echo $this->url('users', 'userid='.$p->user_id)?>"><?php echo $p->username;?></a></td>
+	<td><?php echo $p->email;?></td>
+	<td><?php echo date('jS F Y @ H:i', strtotime($p->dated));?></td>
+	<td style="text-align: right;">$<?php echo number_format($p->amount,2);?></td>
+</tr>
+<?php
+		$tr = 1 - $tr;
+	}
+?>
+</table>
+<br clear="all" />
+<input type="button" onClick="check(this.form,true);" value="Select All" />
+<input type="button" onClick="check(this.form,false);" value="Select None" />
+<input type="button" onClick="invert(this.form);" value="Invert Selection" />
+<noscript>
+<br />The buttons above require javascript to be enabled in order to function.
+</noscript>
+<br /><br />
+<input type="submit" name="delete" value="Delete Selected Payments" onClick="return confirm('Are you sure you want to delete all the selected payments from the database? NB. This will NOT refund the payments from your PayPal account.');" />
+</form>
+<br />
+View Page:
+<?php
+	for( $i = 1; $i <= $numpages; $i++){
+?>
+<a href="<?php echo str_replace('{page}', $i,$pageurl);?>"><?php echo $i;?></a>
+<?php
+	}
+?>
+<br /><br />
+Page <?php echo $page.' of '.$numpages.'.';?><br /><br />
+Listing Payments <?php echo ($first+1).' to '.$last.' of '.$numpayments.'.';?>
+<?php
+}
+?>
+</td>
+</tr>
+</table>
+</div>

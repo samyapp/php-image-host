@@ -1,0 +1,35 @@
+body{
+    font-family: verdana;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+td{
+    font-size: 0.8em;
+    font-family: verdana;
+    text-align: left;
+    padding: 4px;
+    border-bottom: 1px solid #acacac;
+}
+
+h1{
+    font-family: tahoma, verdana;
+}
+
+input{
+    width: 95%;
+    padding: 3px;
+}
+
+table{
+    width: 600px;
+
+}
+
+.label{
+    font-weight: bold;
+}
+
+.field{
+    background-color: #acacff;
+}

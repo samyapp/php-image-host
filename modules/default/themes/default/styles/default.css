@@ -1,0 +1,750 @@
+/*
+
+PHP Image Host
+www.phpace.com/php-image-host
+
+Copyright (c) 2004,2008 Sam Yapp
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+*/
+
+/* general font, size and color settings */
+
+body, div, td{
+	font-family: verdana, arial;
+	font-size: 8pt;
+	color: #000000;
+
+}
+
+/* the text-align: center; is responsible for positioning the site in the middle of the screen */
+
+body{
+	margin: 0px;
+	text-align: center;
+	background-color: #ffffff;
+}
+
+/*
+ the #page <div> just contains all the content displayed on the page. the "margin: ?px auto;" is needed
+	to keep all the content centered on the screen.
+
+	If you would prefer the site to stretch the full width of the screen, change "width: 740px;" to "width: 100%;"
+*/
+
+#page{
+	text-align: center;
+	margin: 30px auto;
+	margin-bottom: 0px;
+	width: 740px;
+}
+
+/*
+	the #content <div> contains everything that changes from one page to the next, ie. the main content on the site.
+*/
+
+#content{
+	padding: 10px;
+	text-align: left;
+	padding-top: 5px;
+	width: 530px;
+	margin: auto;
+	margin-bottom: 0px;
+	margin-right: 0px;
+	float: left;
+	padding-bottom: 0px;
+}
+
+/*
+	the #sidepanel <div> displays content in the php file "/includes/sidepanel.inc.php". It appears on every page.
+	You can edit the sidepanel.inc.php file to display your own google adsense code, links to sponors, or
+	whatever else you want.
+
+	If you want to swap the positions of the #content and #sidepanel <divs> (so the sidepanel is on the left, and
+	the content on the right of the page), change the following values:
+
+	In the #content definition above, change "float: left;" to "float: right;"
+	In the #sidepanel definition below, change "float: right;" to "float: left;"
+
+	*Important*
+
+	For the layout to work, the combined widths of the #content and #sidepanel <divs> (together with any padding
+	or margins) must be less than the "width:" of the #page <div> above.
+
+	If the widths exceed this, then the #sidepanel <div> will appear *below* the #content, instead of to its side.
+
+*/
+
+#sidepanel{
+	float: right;
+	margin: 10px;
+	padding: 0px;
+	text-align: left;
+	width: 150px;
+}
+
+/* link (<a >..</a> ) style definition */
+
+a:link, a:visited{
+	color: blue;
+}
+
+a:hover{
+	color: red;
+}
+
+p{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+strong{
+	font-weight: bold;
+}
+
+li{
+	margin-bottom: 10px;
+}
+
+h3{
+	font-size: 10pt;
+}
+
+
+/*
+	The header is the area containing the logo and the top banner.
+*/
+
+#header{
+	height: 80px;
+}
+
+#logo{
+	margin-left: 5px;
+	margin-top: 5px;
+	float: left;
+	height: 60px;
+	vertical-align: bottom;
+}
+
+/* style for the logo (site name) link. */
+
+#logo a:link, #logo a:visited, #logo a:hover{
+	color: black;
+	font-size: 12pt;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+/* <div> containing the banner for the top of the page. */
+
+#topbanner{
+	float: right;
+	margin: 5px;
+	width: 468px;
+	height: 60px;
+	border: 1px solid black;
+}
+
+
+
+/* footer contains your site's copyright, etc message. */
+
+#footer{
+	clear: both;
+	margin: 5px;
+	text-align: center;
+	color: #555555;
+}
+
+/* <div> containing the banner at the bottom of each page of the site. */
+
+#bottombanner{
+	width: 468px;
+	height: 60px;
+	border: 1px solid black;
+	margin: 10px;
+	float: right;
+	clear: none;
+}
+
+/* style definitions for the <table> used to list member's images on the images.php page when they are logged in. */
+
+.imagetable{
+	background-color: #aaaaaa;
+}
+
+.imagetitle{
+	font-weight: bold;
+	padding: 3px;
+	background-color: #ffffff;
+	color: #000000;
+	text-align: center;
+}
+
+.tr1{
+	background-color: #eeeeee;
+}
+
+.tr2{
+	background-color: #ffffff;
+}
+
+.tdcheck{
+	width: 20px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.tdthumb{
+	vertical-align: middle;
+	text-align: center;
+	padding: 10px;
+}
+
+.thumb{
+	border: 1px solid black;
+	margin: 0px;
+}
+
+.tdinfo{
+	text-align: left;
+	vertical-align: middle;
+	padding: 10px;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.infolabel{
+	font-weight: bold;
+	text-align: left;
+	vertical-align: middle;
+	margin: 0px;
+	padding: 0px;
+	padding-top: 2px;
+}
+
+.infotext{
+	color: #555555;
+	text-align: left;
+	vertical-align: top;
+	margin: 0px;
+	padding: 0px;
+}
+
+/* <input type="text"> style used for listing the urls to link to images on the images.php page. */
+
+.urlinput{
+	width: 300px;
+	margin: 0px;
+	padding: 3px;
+	font-size: 8pt;
+	border: 1px solid black;
+	background-color: #ffffdd;
+	font-family: verdana;
+}
+
+/* style definitions for the upload images form . */
+
+.uploadform{
+	text-align: center;
+	border: 3px dotted #cccccc;
+	padding: 5px;
+}
+
+.uploadheading{
+	font-weight: bold;
+	text-align: center;
+	padding: 5px;
+}
+
+.uploadfield{
+	text-align: center;
+	vertical-align: top;
+	padding: 5px;
+	font-weight: bold;
+}
+
+.uploadinput{
+	width: 45%;
+}
+
+.uploadname{
+	width: 40%;
+}
+
+.uploadgallery{
+	width: 95%;
+}
+
+.uploadsubmit{
+	width: 95%;
+}
+
+/* styles for the galleries.php page */
+
+/* container for the add and edit gallery forms */
+
+.galleryform{
+	text-align: center;
+	border: 3px dotted #cccccc;
+	padding: 5px;
+	width: 450px;
+	margin: 10px auto;
+}
+
+.galleryheading{
+	font-weight: bold;
+	text-align: left;
+	padding-left: 2.5%;
+	font-size: 10pt;
+}
+
+.gallerylabel{
+	font-weight: bold;
+	text-align: left;
+	padding-left: 2.5%;
+	margin-top: 10px;
+}
+
+.gallerynameinput{
+	width: 95%;
+	border: 1px solid black;
+	padding: 2px;
+}
+
+.galleryintrotext{
+	width: 95%;
+	height: 80px;
+	border: 1px solid black;
+	padding: 2px;
+}
+
+.gallerysubmit{
+	width: 95%;
+}
+
+
+
+/* <div> used to display any error messages. */
+
+.errors{
+	font-weight: bold;
+	color: red;
+	margin: 20px;
+	text-align: center;
+}
+
+/* <div> used to display status messages, eg. image uploaded, etc */
+
+.message{
+	font-weight: bold;
+	color: #336699;
+	margin: 10px;
+	text-align: center;
+}
+
+/* styles for galleries.php page */
+
+/* <input> containing the url to each gallery */
+
+.galleryurlinput{
+	width: 95%;
+	margin: 0px;
+	padding: 3px;
+	font-size: 8pt;
+	border: 1px solid #aaaaaa;
+	color: #990000;
+}
+.tdlabel{
+	padding: 4px;
+}
+
+/* styles used on the rename image page */
+
+/* <div> surrounding the thumbnail and form */
+
+.renameform{
+	text-align: center;
+	border: 3px dotted #cccccc;
+	padding: 10px;
+}
+
+/* <div> containing the thumbnail of the image to rename */
+
+.renamethumb{
+	float: left;
+	width: 130px;
+	text-align: center;
+}
+
+/* <div> surrounding the text input and submit button */
+
+.renamefields{
+	float: left;
+	padding: 10px;
+	padding-top: 0px;
+	font-weight: bold;
+	text-align: left;
+}
+
+/* new name <input> styles */
+
+.renamename{
+	margin-top: 10px;
+	width: 300px;
+}
+
+/* submit <input> style */
+
+.renamesubmit{
+	width: 300px;
+	margin-top: 10px;
+	clear: both;
+}
+/* styles used on the resize image page */
+
+/* <div> surrounding the thumbnail and form */
+
+.resizeform{
+	text-align: center;
+	border: 3px dotted #cccccc;
+	padding: 10px;
+}
+
+/* <div> containing the thumbnail of the image to resize */
+
+.resizethumb{
+	float: left;
+	width: 130px;
+	text-align: center;
+	padding-bottom: 10px;
+}
+
+/* <div> surrounding the text input and submit buttons */
+
+.resizefields{
+	float: left;
+	padding: 10px;
+	padding-top: 0px;
+	font-weight: bold;
+	text-align: left;
+	width: 300px;
+}
+
+/* new size <input> styles */
+
+.resizesize{
+	width: 50px;
+	margin-top: 10px;
+}
+
+/* submit <input> style */
+
+.resizesubmit{
+	width: 300px;
+	margin-top: 5px;
+	clear: both;
+}
+
+/* styles used for any member forms, eg. login, join, etc. */
+
+.memberform{
+	text-align: center;
+	margin-top: 40px;
+}
+
+.membertable{
+	background-color: #000000;
+}
+
+.memberheading{
+	background-color: #6699cc;
+	padding: 5px;
+	text-align: center;
+	font-weight: bold;
+	color: #000000;
+}
+
+.memberlabel{
+	padding: 4px;
+	text-align: right;
+	vertical-align: top;
+	font-weight: bold;
+	background-color: #ffffff;
+}
+
+.memberfield{
+	color: #555555;
+	background-color: #ffffff;
+	padding: 4px;
+	text-align: left;
+	vertical-align: top;
+	width: 300px;
+}
+
+.memberinput{
+	width: 95%;
+}
+
+/* styles used for the contact form on the contact.php page. */
+
+.contactform{
+	text-align: center;
+}
+
+.contactinput{
+	width: 400px;
+}
+
+.contactmessage{
+	width: 400px;
+	height: 150px;
+}
+
+.plantable{
+	background-color: #aaaaaa;
+	margin-top: 40px;
+}
+
+/* styles used for the account plan comparison table on the home page. */
+
+.planname{
+	background-color: #ffffff;
+	font-weight: bold;
+	text-align: center;
+	padding: 10px;
+}
+
+.planlabel{
+	font-weight: bold;
+	padding: 6px;
+}
+
+.planvalue{
+	text-align: center;
+	padding: 6px;
+}
+
+/* style for the "powered by phpimagehost" link at the bottom of the page. */
+
+.poweredby{
+	margin: 20px; 
+	padding-bottom: 40px;
+	text-align: center; 
+	color: #bbbbbb;
+}
+
+.poweredby a{
+    text-decoration: none;
+    color: #bbbbbb;
+}
+
+/* user account information block displayed at the top of each page when a user is logged in */
+
+.userinfo{
+	color: black;
+	font-size: 8pt;
+	text-align: left;
+	border: 2px dashed #cccccc;
+	padding: 4px;
+	color: #777777;
+	font-weight: normal;
+	background-color: #eeeeee;
+}
+
+.uivalue{
+	font-weight: bold;
+}
+
+.bimg{
+	float: left;
+	margin: 10px;
+}
+
+a.imga{
+	margin: 0;
+	padding: 9px 9px 9px 9px;
+	border: 1px solid #ccc;
+	border-top-color: #eee;
+	border-right-color: #bbb;
+	border-bottom-color: #eeeeee;
+	text-align: center;
+	display: block;
+}
+
+a.imga:hover{
+	border-color: #ccc;
+	background-color: #eee;
+}
+
+.paginate{
+	clear: both;
+	margin: 1em;
+	text-align: center;
+}
+
+.previous{
+	float: left;
+}
+
+.next{
+	float: right;
+}
+
+.tinfo{
+	font-size:0.9em;
+	font-family: verdana,arial;
+}
+
+.theimage{
+	text-align: center;
+}
+
+.theimage img{
+	border: 2px solid black;
+	background-color: white;
+	padding: 5px;
+}
+.sidebaritem{
+	clear: both;
+	margin-bottom: 1em;
+}
+
+/* navbar, containing all the links to other pages on the site. */
+
+#navbar{
+	border-top: 1px solid #000000;
+	border-bottom: 1px solid #000000;
+	padding: 3px;
+	text-align: center;
+}
+
+/* styles for links appearing in the nav bar */
+
+#navbar a{
+    padding: 4px;
+    border-left: 1px solid #acacac;
+}
+
+#navbar a:link, #navbar a:visited, #navbar a:hover{
+	text-decoration: none;
+}
+
+/* <div> surrounding the navigation menu at the footer of the page */
+#footernav{
+	margin: 2em;
+	color: black;
+}
+
+#footernav a{
+
+}
+
+/* div around the main image displayed on the homepage */
+#homepageimage{
+	float: right;
+	margin: 1em;
+}
+
+#homepageimage a img{
+	border: 1px solid #acacac;
+	padding: 5px;
+}
+
+#homepageimage a:hover img{
+	border: 1px solid black;
+}
+
+#homepagethumbs{
+}
+
+#homepagethumbs .wr{
+	margin: auto;
+}
+
+#homepagethumbs a img{
+	border: 1px solid #acacac;
+	padding: 3px;
+}
+
+#homepagethumbs a:hover img{
+	border: 1px solid #000000;
+}
+
+#homepagethumbs .im{
+	float: left;
+	margin: 5px;
+}
+
+.lcode{
+	padding-top: 4px;
+	font-weight: bold;
+}
+
+/* div thumbnail displayed after image upload */
+.uploadedthumb{
+    float: left;
+    text-align: center;
+}
+
+.uploadedthumb img{
+    border: 1px solid black;
+}
+
+#hpnews{
+    border: 1px dashed #acacff;
+    background-color: white;
+    margin: 0.5em;
+    padding: 0;
+}
+
+#hpnews h2{
+    margin: 0;
+    font-size: 1.1em;
+    border-bottom: 1px dashed #acacff;
+    padding: 0.5em;
+    background-color: #f0f0ff;
+}
+
+#hpnews div{
+    margin: 1em;
+}
+
+#hpnews a{
+    font-weight: bold;
+}
+
+#rate{
+    text-align: center;
+    position: relative;
+}
+#rate #options{
+    margin: auto;
+    text-align: center;
+    width: 50%;
+}
+
+#rate input{
+    border: 0;
+    padding: 0;
+    margin: 0;
+    float: left;
+}

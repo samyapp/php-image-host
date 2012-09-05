@@ -1,0 +1,8 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php echo $this->_t('Upgrade - Already Upgraded Content')?>

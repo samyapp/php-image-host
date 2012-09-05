@@ -1,0 +1,82 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<html>
+<head>
+<title>Php Image Host Admin</title>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->themesURL().'/default/styles.css'?>" />
+<script language="JavaScript" src="<?php echo $this->themesURL().'/default/js.js'?>" type="text/javascript"></script>
+<script language="JavaScript" type="text/javascript" src="<?php echo $this->themesURL().'/jsadmin.js'?>"></script>
+</head>
+<body style="margin: 0px;">
+<div id="navbar">
+<ul id="nav">
+	<li><a href="<?php echo $this->url('index')?>">Site Admin</a>
+		<ul>
+			<li><a href="<?php echo $this->url('settings')?>">Settings</a></li>
+			<li><a href="<?php echo $this->url('homepage')?>">Home Page Content</a></li>
+			<li><a href="<?php echo $this->url('sidebar')?>">Sidebar Content</a></li>
+			<li><a href="<?php echo $this->url('hotlinkbandwidth')?>">Hotlinking and Bandwidth Monitoring</a></li>
+			<li><a href="<?php echo $this->url('plans')?>">Plan Details</a></li>
+			<li><a href="<?php echo $this->url('ips')?>">Banned IPs</a></li>
+			<li><a href="<?php echo $this->url('news')?>">Site News</a></li>
+            <li><a href="<?php echo $this->url('categories')?>">Categories</a></li>
+            <li><a href="<?php echo $this->url('upgrade')?>">Run Upgrade</a></li>
+			<li><a href="<?php echo $this->url('settings', 'logout=1')?>">Logout</a></li>
+		</ul>
+	</li>
+	<li><a href="<?php echo $this->url('images', 'checked=-1')?>">Images</a>
+		<ul>
+			<li><a href="<?php echo $this->url('images', 'checked=-1')?>">All Images</a></li>
+			<li><a href="<?php echo $this->url('images', 'checked=0')?>">Unchecked</a></li>
+			<li><a href="<?php echo $this->url('images','checked=1')?>">Checked</a></li>
+			<li><a href="<?php echo $this->url('galleries')?>">Galleries</a></li>
+		</ul>
+	</li>
+	<li><a href="<?php echo $this->url('users', 'status=-1')?>">Users</a>
+		<ul>
+			<li><a href="<?php echo $this->url('users', 'status=-1')?>">All Users</a></li>
+			<li><a href="<?php echo $this->url('users', 'status=0')?>">Unconfirmed</a></li>
+			<li><a href="<?php echo $this->url('users', 'status=1')?>">Confirmed</a></li>
+			<li><a href="<?php echo $this->url('users', 'status=2')?>">Suspended</a></li>
+			<li><a href="<?php echo $this->url('users', 'status=-1&bandwidth=1')?>">Over Bandwidth</a></li>
+			<li><a href="<?php echo $this->url('users', 'status=-1&account=free')?>">Free Users</a></li>
+			<li><a href="<?php echo $this->url('users', 'status=-1&account=paid')?>">Paid Users</a></li>
+			<li><a href="<?php echo $this->url('users', 'edit=1')?>">Add A User</a></li>
+		</ul>
+	</li>
+	<li><a href="<?php echo $this->url('payments')?>">Payments</a>
+		<ul>
+			<li><a href="<?php echo $this->url('payments', 'fromdate='.date('Y-m-d'))?>">Today</a></li>
+			<li><a href="<?php echo $this->url('payments', 'fromdate='.date('Y-m-d', mktime(0,0,0,date('m'), (int)date('d')-7,date('Y'))))?>">Last 7 Days</a></li>
+			<li><a href="<?php echo $this->url('payments', 'fromdate='.date('Y-m-d', mktime(0,0,0,date('m'), 1, date('Y'))))?>">This Month</a></li>
+			<li><a href="<?php echo $this->url('payments', 'fromdate='.date('Y-m-d', mktime(0,0,0,date('m')-1, 1, date('Y'))).'&todate='.date('Y-m-d', mktime(0,0,0,date('m'), -1, date('Y'))))?>">Last Month</a></li>
+			<li><a href="<?php echo $this->url('payments', 'fromdate='.date('Y-m-d', mktime(0,0,0,date('m')-3, 1, date('Y'))))?>">Last 3 Months</a></li>
+			<li><a href="<?php echo $this->url('payments', 'fromdate='.date('Y-m-d', mktime(0,0,0,date('m')-6, 1, date('Y'))))?>">Last 6 Months</a></li>
+		</ul>
+	</li>
+	<li><a href="<?php echo $this->url('banners')?>">Banner Ads</a>
+		<ul>
+			<li><a href="<?php echo $this->url('banners')?>">List Ads</a></li>
+			<li><a href="<?php echo $this->url('banners','edit=1')?>">New Ad</a></li>
+		</ul>
+	</li>
+    <li>
+        <a target="pihsite" href="<?php echo $this->app->config->siteurl?>">View Site</a>
+    </li>
+    <li>
+        <a href="http://forum.phpace.com/">Support Forum</a>
+    </li>
+</ul>
+</div>
+<?php echo $this->templateContent?>
+<br clear="all" />
+    <div style="margin: 20px; color: #aaaaaa; text-align: center;">
+        Copyright 2004, 2008 - 2009 <a style="color: #aaaaaa;" target="_blank" href="http://www.phpace.com/php-image-host">Php Image Host</a>.
+    </div>
+</body>
+</html>

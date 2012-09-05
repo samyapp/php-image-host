@@ -1,0 +1,203 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<div style="text-align: center;">
+<b>Manage Images</b><br /><br />
+This page lets you view and delete the images uploaded by your users. Use the form on the left to filter
+which images are displayed.
+<br /><br />
+<a href="<?php echo $this->url('images', 'checked=0')?>">New Uploads</a>
+<a href="<?php echo $this->url('images', 'checked=-1')?>">All Images</a>
+<br /><br />
+<table border="0" cellspacing="0" cellpadding="10" width="95%">
+<tr>
+<td style="text-align: center; vertical-align: top; width: 150px; color: #555555; font-weight: bold;">
+<div style="padding: 5px; border: 2px solid #555555; ">
+<div style="border-bottom: 2px solid #555555; font-weight: bold;text-align: center;padding: 3px;margin-bottom: 5px;">Search Images</div>
+<form action="<?php echo $this->url('images')?>" method="post">
+Name Like<br />
+<input type="text" name="name" value="<?php echo htmlspecialchars($name);?>" />
+<br />(Use * as wildcard)
+<br /><br />Uploaded Between<br />
+<input type="text" name="fromdate" value="<?php echo htmlspecialchars($fromdate);?>" />
+<br />and<br />
+<input type="text" name="todate" value="<?php echo htmlspecialchars($todate);?>" />
+<br />(enter dates in format yyyy-mm-dd).
+<br /><br />From IP<br />
+<input type="text" name="ip" value="<?php echo htmlspecialchars($ip);?>" />
+<br /><br />Username<br />
+<input type="text" name="username" value="<?php echo htmlspecialchars($username);?>" />
+<br />Use * as wildcard.
+<br /><br />Gallery?<br />
+<input type="text" name="gallery" value="<?php echo htmlspecialchars($gallery);?>" />
+<br />Use * as wildcard.
+<br /><br />Format<br />
+<select name="format">
+	<option value="">All Formats</option>
+	<option value="jpg"<?php if($format == 'jpg' ) echo ' SELECTED ';?>>JPEG</option>
+	<option value="png"<?php if($format == 'png' ) echo ' SELECTED ';?>>PNG</option>
+	<option value="gif"<?php if($format == 'gif' ) echo ' SELECTED ';?>>GIF</option>
+</select>
+<br /><br />Bandwidth Used (mb) >=
+<br /><input type="text" name="bandwidth" value="<?php echo $bandwidth;?>" />
+<br /><br />Filesize<br />
+<select name="sizetype">
+	<option value="">any</option>
+	<option value="&lt;"<?php if( $sizetype == '<' ) echo ' SELECTED '?>;>&lt;</option>
+	<option value="&gt;"<?php if( $sizetype == '>' ) echo ' SELECTED '?>;>&gt;</option>
+</select>
+<input style="text-align: right; width: 50px;" type="text" name="filesize" value="<?php echo $filesize;?>" /> kb
+<br /><br />Checked?<br />
+<select name="checked">
+	<option value="-1">Either</option>
+	<option value="0"<?php if( $checked == 0 ) echo ' SELECTED ';?>>Unchecked</option>
+	<option value="1"<?php if( $checked == 1 ) echo ' SELECTED ';?>>Checked</option>
+</select>
+<br /><br />Order By<br />
+<select name="orderby">
+<?php
+	foreach( $images->orderbys as $n=>$v ){
+		$sel = $n == $orderby ? ' SELECTED ' : '';
+		echo "<option value=\"$n\"$sel>$v</option>\n";
+	}
+?>
+</select>
+<br />
+<select name="orderdir">
+	<option value="asc">ascending</option>
+	<option value="desc"<?php if( $orderdir == 'desc' ) echo ' SELECTED ';?>>descending</option>
+</select>
+<br /><br />Display<br />
+<input style="width: 40px;" type="text" name="perpage" value="<?php echo $perpage;?>" />
+<br />Per Page
+<br /><br /><input type="submit" value="List Images" />
+</form>
+</div>
+</td>
+<td style="text-align: center; vertical-align: top;">
+
+<div class="errors">
+<?php if( $message != '' ) echo $message."<br /><br />";?>
+<?php if( count($errors) > 0 ) echo join("<br />", $errors)."<br /><br />";?>
+<?php echo $numimages;?> image(s) matched your criteria.
+</div>
+<?php
+if( $numimages > 0 ){
+?>
+Listing images <?php echo ($first+1).' to '.$last.' of '.$numimages.'.';?><br /><br />
+Page <?php echo $page.' of '.$numpages.'.';?><br /><br />
+View Page:
+<?php
+	for( $i = 1; $i <= $numpages; $i++){
+?>
+<a href="<?php echo str_replace('{page}', $i,$pageurl);?>"><?php echo $i;?></a>
+<?php
+	}
+?>
+<br /><br />
+<form name="iform" id="iform" action="<?php echo $this->url('images')?>" method="post">
+<input type="hidden" name="name" value="<?php echo htmlspecialchars($name);?>" />
+<input type="hidden" name="username" value="<?php echo htmlspecialchars($username);?>" />
+<input type="hidden" name="sizetype" value="<?php echo htmlspecialchars($sizetype);?>" />
+<input type="hidden" name="format" value="<?php echo htmlspecialchars($format);?>" />
+<input type="hidden" name="perpage" value="<?php echo $perpage;?>" />
+<input type="hidden" name="filesize" value="<?php echo $filesize;?>" />
+<input type="hidden" name="checked" value="<?php echo $checked;?>" />
+<input type="hidden" name="gallery" value="<?php echo htmlspecialchars($gallery);?>" />
+<input type="hidden" name="ip" value="<?php echo htmlspecialchars($ip);?>" />
+<input type="hidden" name="orderby" value="<?php echo $orderby;?>" />
+<input type="hidden" name="orderdir" value="<?php echo $orderdir;?>" />
+<table class="formtable" cellspacing="1" cellpadding="0" border="0" align="center" style="background-color: #555555;">
+<tr>
+	<th>&nbsp;</th>
+	<th>Image</th>
+	<th>Name</th>
+	<th>Uploaded</th>
+	<th>User</th>
+	<th>Filesize</th>
+	<th>Bandwidth</th>
+	<th>Size</th>
+	<th>Type</th>
+	<th>Gallery</th>
+</tr>
+<?php
+	$tr = 0;
+	foreach( $imges as $i ){
+?>
+<tr class="tr<?php echo ($tr+1);?>">
+	<td>
+		<input type="checkbox" name="ids[]" value="<?php echo $i->image_id;?>" />
+	</td>
+	<td style="text-align: center;">
+<a onClick="return si('<?php echo $i->image_url;?>', <?php echo $i->width;?>, <?php echo $i->height;?>);" href="<?php echo $i->image_url;?>" target="_blank"><img border="0" class="thumbnail" src="<?php echo $i->thumb_url;?>" /></a>
+	</td>
+	<td><?php echo htmlspecialchars($i->name.'.'.$i->type);?></td>
+	<td><?php echo @date("l jS F Y H:i", @strtotime($i->uploaded));?></td>
+	<td><a href="<?php echo $this->url('images', 'username='.htmlspecialchars($i->username))?>"><?php echo htmlspecialchars($i->username);?></a>
+        [<a href="<?php echo $this->url('users', 'userid='.$i->user_id)?>">view</a>]<br /><?php echo htmlspecialchars($i->ip);?></td>
+	<td><?php echo number_format($i->filesize/1024,2);?>k</td>
+	<td><?php echo $i->bandwidth;?>mb</td>
+	<td><?php echo $i->width.'x'.$i->height;?></td>
+	<td><?php echo $i->type;?></td>
+	<td>
+		<?php if( $i->gallery_id != 0 ){?>
+		<a href="<?php echo $this->url('images', 'username='.$i->username.'&gallery='.$i->gallery_name.'&perpage='.$perpage)?>"><?php echo $i->gallery_name;?></a>
+		<?php }else{ ?>
+		&nbsp;
+		<?php }?>
+	</td>
+</tr>
+<?php
+		$tr = 1 - $tr;
+	}
+?>
+</table>
+<br clear="all" />
+<input type="button" onClick="check(this.form,true);" value="Select All" />
+<input type="button" onClick="check(this.form,false);" value="Select None" />
+<input type="button" onClick="invert(this.form);" value="Invert Selection" />
+<noscript>
+<br />The buttons above require javascript to be enabled in order to function.
+</noscript>
+<br /><br />
+<input type="submit" name="setchecked" value="Mark Selected Images As Checked" onClick="return confirm('Are you sure you want to mark the selected images as Checked?');" />
+<br /><br />
+<input type="submit" name="setunchecked" value="Mark Selectted Images As Unchecked" onClick="return confirm('Are you sure you want to mark the selected images as Unchecked?');" />
+<br /><br />
+<input type="submit" name="setviews" value="Set selected images views to:" /> <input type="text" size="6" name="views" value="0" />
+<br /><br />
+<input type="submit" name="setrating" value="Set selected images rating and votes to:" />
+<select name="rating">
+    <?php for( $i = 0; $i <= 10; $i++ ) {?>
+        <option value="<?php echo $i?>"><?php echo $i?> / 10</option>
+    <?php } ?>
+</select>
+<input type="text" name="votes" value="0" size="6" /> Votes
+<br /><br />
+<input type="submit" name="delete" value="Delete Selected Images" onClick="return confirm('Are you sure you want to delete all the selected images?');" />
+<br /><input type="checkbox" name="banips" value="1" /> and ban the i.p. addresses they were uploaded from.
+<br /><input type="checkbox" name="suspendusers" value="1" /> and suspend the members who uploaded them.
+</form>
+<br />
+View Page:
+<?php
+	for( $i = 1; $i <= $numpages; $i++){
+?>
+<a href="<?php echo str_replace('{page}', $i,$pageurl);?>"><?php echo $i;?></a>
+<?php
+	}
+?>
+<br /><br />
+Page <?php echo $page.' of '.$numpages.'.';?><br /><br />
+Listing images <?php echo ($first+1).' to '.$last.' of '.$numimages.'.';?>
+<?php
+}
+?>
+</td>
+</tr>
+</table>
+</div>

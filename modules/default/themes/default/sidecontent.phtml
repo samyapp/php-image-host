@@ -1,0 +1,107 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php
+
+// this file contains whatever you want to appear in the column on the right (or left, if you change it)
+// of every page of your site.
+
+if( $this->app->config->sidebar_account_pos == 'top' ){
+?><div class="sidebaritem"><?php
+	echo $this->render('account_info');
+?></div><?php
+}
+
+if( $this->app->config->sidebar_top_html ){
+?>
+<div class="sidebaritem">
+<?php
+echo $this->app->config->sidebar_top_html;
+?>
+</div>
+<?php
+}
+
+if( $this->app->config->sidebar_account_pos == 'before' ){
+?><div class="sidebaritem"><?php
+	echo $this->render('account_info');
+?></div><?php
+}
+
+if( $this->app->config->sidebar_images ){
+	if( !isset($images) ){
+		$images =& $app->loadClass('images');
+	}
+	switch( $this->app->config->sidebar_image_type ){
+		case 'recent':
+			$orderby = 'uploaded';
+			$orderdir = 'desc';
+			$heading = 'Recent Images';
+			break;
+		default:
+			$orderby = 'random';
+			$orderdir = '';
+			$heading = 'Random Images';
+			break;
+	}
+	$simgs = $images->getimages(array('public' => 1, 'checked'=>1), $orderby, $orderdir, 0, $this->app->config->sidebar_images);
+?><div class="sidebaritem">
+<h3><?php echo htmlspecialchars($heading)?></h3>
+<?php
+	$i_n = 0;
+	foreach( $simgs as $i ){
+?>
+<div style="float: left; padding: 5px; width: <?php echo $this->app->config->sidebar_image_width + 10?>px;">
+<a href="<?php echo $this->url('browse','view=1&id='.$i->image_id)?>"><img width="<?php echo $this->app->config->sidebar_image_width?>" border="0" style="border: 1px solid black;" src="<?php echo $i->thumb_url;?>" alt="" /></a>
+</div>
+<?php
+	}
+?>
+</div>
+<?php
+}
+
+if( $this->app->config->sidebar_account_pos == 'after' ){
+?><div class="sidebaritem"><?php
+	echo $this->render('account_info');
+?></div><?php
+}
+
+// site news headlines
+if( $this->app->config->sidebar_news_items != 0 ) {
+    $news_items = $this->helper('news')->getNews($this->app->config->sidebar_news_items);
+    if( $news_items ) {
+?>
+    <div class="sidebaritem">
+        <h3><?php echo $this->t('Site News')?></h3>
+    <?php foreach( $news_items as $news ) {?>
+        <p><a href="<?php echo $this->url('news', 'article='.$news->news_id)?>"><?php echo htmlspecialchars($news->headline)?></a>
+            <i><?php echo date('l jS F Y', strtotime($news->published))?></i>
+        </p>
+    <?php } ?>
+    </div>
+<?php
+    }
+}
+
+if( $this->app->config->sidebar_bottom_html ){
+?>
+<div class="sidebaritem">
+<?php
+echo $this->app->config->sidebar_bottom_html;
+?>
+</div>
+<?php
+}
+
+if( $this->app->config->sidebar_account_pos == 'bottom' ){
+?><div class="sidebaritem"><?php
+	echo $this->render('account_info');
+?></div><?php
+}
+
+

@@ -1,0 +1,310 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<div style="text-align: center;">
+<b>Manage Users</b><br /><br />
+This page lets you view, add, edit, delete, and change the status of the registered users of your site.
+You can also downgrade free accounts to paid accounts, and upgrade free accounts to paid accounts, as
+well as increase the number of days remaining on any paid accounts.
+Use the form on the left to filter which users are displayed.
+<br /><br />
+[<a href="<?php echo $this->url('users', 'edit=1')?>">Add A New User</a>]
+[<a href="<?php echo $this->url('users','bandwidth=1&status=-1')?>">Exceeding Bandwidth</a>]
+[<a href="<?php echo $this->url('users','status=-1&account=free')?>">Free Members</a>]
+[<a href="<?php echo $this->url('users','status=-1&account=paid')?>">Paid Members</a>]
+[<a href="<?php echo $this->url('users','status=0')?>">Unconfirmed Members</a>]
+[<a href="<?php echo $this->url('users','status=1')?>">Confirmed Members</a>]
+[<a href="<?php echo $this->url('users','status=2')?>">Suspended Members</a>]
+[<a href="<?php echo $this->url('users','status=-1&datetype=loggedin&todate='.date('Y-m-d',time()-(30*24*60*60)));?>">Loggedin over 30 days ago.</a>]
+<br /><br />
+<table border="0" cellspacing="0" cellpadding="10" width="95%">
+<tr>
+<td style="text-align: center; vertical-align: top; width: 150px; color: #555555; font-weight: bold;">
+<div style="padding: 5px; border: 2px solid #555555; ">
+    <div style="border-bottom: 2px solid #555555; font-weight: bold;text-align: center;padding: 3px;margin-bottom: 5px;">Search Users</div>
+<form action="<?php echo $this->url('users')?>" method="post">
+Username Like<br />
+<input type="text" name="uname" value="<?php echo htmlspecialchars($username);?>" />
+<br />(Use * as wildcard)
+<br /><br />Name Like<br />
+<input type="text" name="name" value="<?php echo htmlspecialchars($name);?>" />
+<br />(Use * as wildcard)
+<br /><br />Email Like<br />
+<input type="text" name="email" value="<?php echo htmlspecialchars($email);?>" />
+<br />(Use * as wildcard)
+<br /><br />
+<select name="datetype">
+<?php
+foreach($datetypes as $d=>$v ){
+	$sel = $d == $datetype ? ' SELECTED ' : '';
+	echo "<option value=\"$d\"$sel>$v</option>\n";
+}
+?>
+</select>
+<br />
+between
+<br />
+<input type="text" name="fromdate" value="<?php echo htmlspecialchars($fromdate);?>" />
+<br />and<br />
+<input type="text" name="todate" value="<?php echo htmlspecialchars($todate);?>" />
+<br />(enter dates in format yyyy-mm-dd)
+<br /><br />Account Status<br />
+<select name="status">
+<option value="-1">Any</option>
+<?php
+foreach( $statustexts as $s=>$v){
+	$sel = $s == $status ? ' SELECTED ' : '';
+	echo "<option value=\"$s\"$sel>$v</option>\n";
+}
+?>
+</select>
+<br /><br />Account Type<br />
+<select name="account">
+<option value="">Any</option>
+<option value="free"<?php if( $account == 'free' ) echo ' SELECTED ';?>>Free</option>
+<option value="paid"<?php if( $account == 'paid' ) echo ' SELECTED ';?>>Paid</option>
+</select>
+<br /><br />Order By<br />
+<select name="orderby">
+<?php
+foreach( $users->orderbys as $n=>$v ){
+	$sel = $n == $orderby ? ' SELECTED ' : '';
+	echo "<option value=\"$n\"$sel>$v</option>\n";
+}
+?>
+</select>
+<br />
+<select name="orderdir">
+	<option value="asc">ascending</option>
+	<option value="desc"<?php if( $orderdir == 'desc' ) echo ' SELECTED ';?>>descending</option>
+</select>
+<br /><br />Display<br />
+<input style="width: 40px;" type="text" name="perpage" value="<?php echo $perpage;?>" />
+<br />Per Page
+<br /><br /><input type="submit" value="List Users" />
+</form>
+</td>
+<td style="text-align: center; vertical-align: top;">
+
+<?php if( $message != '' ){?>
+<div class="errors"><?php echo $message;?></div>
+<?php } ?>
+<?php if( count($errors) > 0 ){ ?>
+<div class="errors"><?php echo join("<br />", $errors);?></div>
+<?php }
+
+if( !$edit ){
+?>
+<div class="errors"><?php	echo $numusers;?> user(s) matched your criteria.</div>
+<?php
+if( $numusers > 0 ){
+?>
+Listing users <?php echo ($first+1).' to '.$last.' of '.$numusers.'.';?><br /><br />
+Page <?php echo $page.' of '.$numpages.'.';?><br /><br />
+View Page:
+<?php
+	for( $i = 1; $i <= $numpages; $i++){
+?>
+<a href="<?php echo str_replace('{page}', $i,$pageurl);?>"><?php echo $i;?></a>
+<?php
+	}
+?>
+<br /><br />
+<form name="iform" id="iform" action="<?php echo $this->url('users')?>" method="post">
+<input type="hidden" name="name" value="<?php echo htmlspecialchars($name);?>" />
+<input type="hidden" name="uploadedby" value="<?php echo htmlspecialchars($uploadedby);?>" />
+<input type="hidden" name="days" value="<?php echo $days;?>" />
+<input type="hidden" name="status" value="<?php echo $status;?>" />
+<input type="hidden" name="category" value="<?php echo htmlspecialchars($category);?>" />
+<input type="hidden" name="orderby" value="<?php echo $orderby;?>" />
+<input type="hidden" name="orderdir" value="<?php echo $orderdir;?>" />
+<input type="hidden" name="display" value="<?php echo htmlspecialchars($display);?>" />
+<table class="formtable" cellspacing="1" cellpadding="0" border="0" align="center" style="background-color: #555555;">
+<tr>
+	<th>&nbsp;</th>
+	<th>Username</th>
+	<th>Name</th>
+	<th>Email</th>
+	<th>Joined</th>
+	<th>Last Login</th>
+	<th>Images</th>
+	<th>Bandwidth</th>
+	<th>Storage</th>
+	<th>Status</th>
+	<th>Type</th>
+</tr>
+<?php
+	$tr = 0;
+	foreach( $usrs as $u ){
+		if( $u->max_images > 0 ){
+			$imgs = $u->images.' / '.$u->max_images;
+			if( $u->images > $u->max_images ) $imgs = '<span style="color: red;">'.$imgs.'</span>';
+		}else{
+			$imgs = $u->images.' / unlimited.';
+		}
+		if( $u->bandwidth > 0 ){
+			$bwidth = $u->bandwidth_used.' / '.$u->bandwidth;
+			if( $u->bandwidth_used > $u->bandwidth ) $bwidth = '<span style="color: red;">'.$bwidth.'</span>';
+		}else{
+			$bwidth = $u->bandwidth_used.' / unlimited';
+		}
+		if( $u->storage > 0 ){
+			$storage = $u->storage_used.' / '.$u->storage;
+			if( $u->storage_used > $u->storage ) $storage = '<span style="color: red;">'.$storage.'</span>';
+		}else{
+			$storage = $u->storage_used.' / unlimited';
+		}
+?>
+<tr class="tr<?php echo ($tr+1);?>">
+	<td>
+		<input type="checkbox" name="ids[]" value="<?php echo $u->user_id;?>" />
+	</td>
+	<td><a href="<?php echo $this->url('users', 'userid='.$u->user_id)?>"><?php echo htmlspecialchars($u->username);?></a></td>
+	<td><?php echo htmlspecialchars($u->name);?></td>
+	<td><?php echo htmlspecialchars($u->email);?></td>
+	<td><?php echo @date("Y-m-d", @strtotime($u->joined)).' ('.$u->ip.')';?></td>
+	<td><?php echo @date("Y-m-d", @strtotime($u->lastlogin)).' ('.$u->loginip.')';?></td>
+	<td style="text-align: center;"><a href="<?php echo $this->url('myimages', 'checked=-1&username='.$u->username)?>"><?php echo $imgs;?></a></td>
+	<td><?php echo $bwidth;?></td>
+	<td><?php echo $storage;?></td>
+	<td><?php echo $statustexts[$u->status];?></td>
+	<td><?php echo ucfirst($u->account_type).($u->account_type == 'paid' ? ' (to '.$u->paid_until.')' : '');?></td>
+</tr>
+<?php
+		$tr = 1 - $tr;
+	}
+?>
+</table>
+<br clear="all" />
+<input type="button" onClick="check(this.form,true);" value="Select All" />
+<input type="button" onClick="check(this.form,false);" value="Select None" />
+<input type="button" onClick="invert(this.form);" value="Invert Selection" />
+<noscript>
+<br />The buttons above require javascript to be enabled in order to function.
+</noscript>
+<br /><br />
+<input type="submit" name="upgrade" value="Upgrade Selected Users For" onClick="return confirm('Are you sure you want to upgrade selected users accounts to paid for the additional number of days selected?');" />
+<input type="text" name="extradays" style="width: 40px;" /> Days.
+<br /><br />
+<input type="submit" name="downgrade" value="Downgrade Selected Users" onClick="return confirm('Are you sure you want to downgrade all the selected users to a free account?');" />
+<br /><br />
+<input type="submit" name="changestatus" value="Change Selected Users Status To" onClick="return confirm('Are you sure you want to change the status of the selected users?');" />
+<select name="newstatus">
+<?php
+foreach( $statustexts as $s=>$v ){
+	$sel = $s == $newstatus ? ' SELECTED ' : '';
+	echo "<option value=\"$s\"$sel>$v</option>\n";
+}
+?>
+</select>
+<br /><br />
+<input type="submit" name="delete" value="Delete Selected Users" onClick="return confirm('Are you sure you want to delete all the selected users and their images?');" />
+</form>
+<br />
+View Page:
+<?php
+	for( $i = 1; $i <= $numpages; $i++){
+?>
+<a href="<?php echo str_replace('{page}', $i,$pageurl);?>"><?php echo $i;?></a>
+<?php
+	}
+?>
+<br /><br />
+Page <?php echo $page.' of '.$numpages.'.';?><br /><br />
+Listing users <?php echo ($first+1).' to '.$last.' of '.$numusers.'.';?>
+<?php
+}
+
+}else{	// edit user
+?>
+<form action="<?php echo $this->url('users')?>" method="post">
+<input type="hidden" name="userid" value="<?php echo $userid;?>" />
+<table align="center" class="formtable" cellspacing="1" cellpadding="0">
+	<tr>
+		<td colspan="2" class="formheading"><?php echo !$user ? 'Add New User' : 'Edit User "'.htmlspecialchars($user->username).'"';?></td>
+	</tr>
+	<tr>
+		<td class="formlabel">Username:</td>
+		<td class="formfield"><input type="text" class="forminput" name="fusername" value="<?php echo htmlspecialchars($fusername);?>" /></td>
+	</tr>
+	<tr>
+		<td class="formlabel">Name:</td>
+		<td class="formfield"><input type="text" class="forminput" name="fname" value="<?php echo htmlspecialchars($fname);?>" /></td>
+	</tr>
+	<tr>
+		<td class="formlabel">Email:</td>
+		<td class="formfield"><input type="text" class="forminput" name="femail" value="<?php echo htmlspecialchars($femail);?>" /></td>
+	</tr>
+	<tr>
+		<td class="formlabel">Password:</td>
+		<td class="formfield"><input type="text" class="forminput" name="fpassword" value="<?php echo htmlspecialchars($fpassword);?>" /></td>
+	</tr>
+	<tr>
+		<td class="formlabel">Status:</td>
+		<td class="formfield">
+			<select name="fstatus">
+<?php
+	foreach( $statustexts as $s => $v ){
+		$sel = $s == $fstatus ? ' SELECTED ' : '';
+		echo "<option value=\"$s\"$sel>$v</option>\n";
+	}
+?>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td class="formlabel">&nbsp;</td>
+		<td class="formfield"><input type="submit" name="update" value="<?php echo !$user  ? 'Add New User' : 'Update User';?>" /></td>
+	</tr>
+<?php	if( $user ){?>
+	<tr>
+		<td class="formlabel">Joined On:</td>
+		<td class="formfield"><?php echo date('l jS F Y @ H:i', strtotime($user->joined));?></td>
+	</tr>
+	<tr>
+		<td class="formlabel">IP Address:</td>
+		<td class="formfield"><?php echo $user->ip;?></td>
+	</tr>
+	<tr>
+		<td class="formlabel">Last Logged In:</td>
+		<td class="formfield"><?php echo date('l jS F Y @ H:i', strtotime($user->lastlogin));?></td>
+	</tr>
+	<tr>
+		<td class="formlabel">IP Address:</td>
+		<td class="formfield"><?php echo $user->loginip;?></td>
+	</tr>
+	<tr>
+		<td class="formlabel">Uploaded Images:</td>
+		<td class="formfield"><a href="<?php echo $this->url('myimages', 'checked=-1&username='.$user->username)?>"><?php echo $user->images;?></a></td>
+	</tr>
+	<tr>
+		<td class="formlabel">Galleries:</td>
+		<td class="formfield"><a href="<?php echo $this->url('galleries', 'username='.$user->username)?>"><?php echo count($user->galleries);?></a></td>
+	</tr>
+	<tr>
+		<td class="formlabel">Account Type:</td>
+		<td class="formfield"><?php echo ucfirst($user->account_type);?></td>
+	</tr>
+	<tr>
+		<td class="formlabel">Bandwidth Used:</td>
+		<td class="formfield"><?php echo $user->bandwidth_used.'mb of '.($user->bandwidth == 0 ? 'unlimited' : $user->bandwidth.'mb');?>.</td>
+	</tr>
+	<tr>
+		<td class="formlabel">Storage Used:</td>
+		<td class="formfield"><?php echo $user->storage_used.'mb of '.($user->storage == 0 ? 'unlimited' : $user->storage.'mb');?>.</td>
+	</tr>
+<?php }?>
+</table>
+</form>
+<?php
+}
+
+?>
+</td>
+</tr>
+</table>
+</div>

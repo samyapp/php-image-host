@@ -1,0 +1,63 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<div style="text-align: center;">
+<h3>Edit Sidebar Widgets</h3>
+<p>
+	Select what you want to display on the right hand side of the site.
+	You can also enter HTML (for example google adsense code) above and below the
+	other sidebar content.
+</p>
+
+<form id="sidebarform" action="<?php echo $this->url('sidebar')?>" method="post">
+	<div>Top of sidebar HTML</div>
+	<div>
+		<textarea name="sidebar_top_html"><?php echo htmlspecialchars($this->app->config->sidebar_top_html)?></textarea>
+	</div>
+	<br />
+	<div>Sidebar Images</div>
+	<div>
+		Display <input size="4" type="text" name="sidebar_images" value="<?php echo $this->app->config->sidebar_images?>" />
+		<select name="sidebar_image_type">
+			<option value="recent"<?php if( $this->app->config->sidebar_image_type == 'recent' ) echo ' selected="selected" '?>>Latest</option>
+			<option value="random"<?php if( $this->app->config->sidebar_image_type == 'random' ) echo ' selected="selected" '?>>Random</option>
+		</select>
+		checked public images. Enter 0 for no images.
+		<br /><br />
+		Width for images in the sidebar:<br />
+		 <input type="text" name="sidebar_image_width" value="<?php echo $this->app->config->sidebar_image_width?>" size="5" />
+	</div>
+
+	<br />
+	<div>Login form / Account Details Widget Position</div>
+	<div>
+		<select name="sidebar_account_pos">
+			<option value="navbar">Below the navigation bar</option>
+			<option value="top" <?php if( $this->app->config->sidebar_account_pos == 'top' ) echo ' selected="selected" '?>>Top of the sidebar</option>
+			<option value="bottom" <?php if( $this->app->config->sidebar_account_pos == 'bottom' ) echo ' selected="selected" '?>>Bottom of the sidebar</option>
+			<option value="before" <?php if( $this->app->config->sidebar_account_pos == 'before' ) echo ' selected="selected" '?>>Before the sidebar images (if selected)</option>
+			<option value="after" <?php if( $this->app->config->sidebar_account_pos == 'after' ) echo ' selected="selected" '?>>Beneath the sidebar images (if selected)</option>
+		</select>
+	</div>
+
+	<br />
+	<div>Bottom of sidebar HTML</div>
+	<div>
+		<textarea name="sidebar_bottom_html"><?php echo htmlspecialchars($this->app->config->sidebar_bottom_html)?></textarea>
+	</div>
+    <div>
+        <h3>Display Site News?</h3>
+        <input type="text" style="width: 20px;" name="sidebar_news_items" value="<?php echo $this->app->config->sidebar_news_items?>" />
+        <br />Enter the maximum number of (published) news headlines to display on the sidebar page. Enter 0 for none. Enter -1 To display all
+        current (non-archived) published news items.
+    </div>
+
+	<div>
+		<input type="submit" name="update" value="Save Changes" />
+	</div>
+</form>
+</div>

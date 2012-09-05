@@ -1,0 +1,25 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php echo $this->render('news_header')?>
+<h2><?php echo $nstatus == '' ? 'All' : ucfirst($nstatus)?> Site News</h2>
+<?php if( $items ) { ?>
+
+    <div>
+    <?php foreach( $items as $item ) { ?>
+        <div>
+            <b><a href="<?php echo $this->url('news', 'news_id='.$item->news_id)?>"><?php echo htmlspecialchars($item->headline)?></a></b>
+            <?php echo date('l jS F Y', strtotime($item->published))?>
+            <b><?php echo strtoupper($item->status)?></b>
+            <p>
+            <?php echo nl2br(htmlspecialchars($item->summary))?>
+            </p>
+        </div>
+    <?php } ?>
+    </div>
+
+<?php } ?>

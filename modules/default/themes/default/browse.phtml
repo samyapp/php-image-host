@@ -1,0 +1,232 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<h3><?php echo $heading?></h3>
+
+<?php if( !$view ){ ?>
+<div class="paginate">
+	<div class="previous">
+<?php if( $page > 1 ){?>
+		<a href="<?php echo $this->url('browse','username='.htmlspecialchars($username).'&g='.$gallery_id.'&i='.($image_n - $per_page).$extra_options)?>"><?php echo $this->t('Back')?></a>
+<?php }?>
+	</div>
+	<div class="pages">
+		<?php echo $this->t('Images')?> 
+		<?php echo $image_n+1?> 
+		<?php echo $this->t('to')?>
+		<?php echo min($image_n+$per_page, $total_images)?>
+		<?php echo $this->t('of')?>
+		<?php echo $total_images?>
+	</div>
+	<div class="next">
+<?php if( $page < $total_pages ){?>
+		<a href="<?php echo $this->url('browse','username='.htmlspecialchars($username).'&g='.$gallery_id.'&i='.($image_n + $per_page).$extra_options)?>"><?php echo $this->t('next')?></a>
+<?php }?>
+	</div>
+</div>
+
+<div id="browsethumbs">
+	<?php $image_cnt = $image_n; foreach( $imgs as $i ){?>
+	<div class="bimg" style="width: <?php echo $this->app->config->thumbnail_width + 30?>px; height: <?php echo $this->app->config->thumbnail_height + 60?>px;">
+		<a class="imga" href="<?php echo $this->url('browse','username='.htmlspecialchars($username).'&g='.$gallery_id.'&i='.$image_cnt.'&view=1'.$extra_options)?>"><img src="<?php echo $i->thumb_url?>" border="0" /></a>
+		<div class="tinfo">
+        <?php if( $this->app->config->image_ratings != 'off' ) { ?>
+            <img src="<?php echo $this->themesURL().'/default/gfx/r'.$i->rating.'.png'?>" />
+        <?php } ?>
+			<?php echo $i->name?>.<?php echo $i->type?>
+			(<?php echo $i->width.'x'.$i->height?>)<br />
+			<?php echo $this->t('by')?>
+			<a href="<?php echo $this->url('browse','username='.$i->username)?>"><?php echo $i->username?></a>
+			<?php if( $i->gallery_id ){ ?>
+			<br />
+			<?php echo $this->t('in')?>
+			<a href="<?php echo $this->url('browse', 'g='.$i->gallery_id)?>"><?php echo htmlspecialchars($i->gallery_name)?></a>
+			<?php }?>
+        <?php if( $this->app->config->log_image_views ) { ?>
+            <br />(<?php echo $i->views?> <?php echo $this->t('views')?>)
+        <?php } ?>
+		</div>
+	</div>
+	<?php
+			$image_cnt++;
+		}
+	?>
+</div>
+
+<div class="paginate">
+	<div class="previous">
+<?php if( $page > 1 ){?>
+		<a href="<?php echo $this->url('browse', 'username='.htmlspecialchars($username).'&g='.$gallery_id.'&i='.($image_n - $per_page).$extra_options)?>"><?php echo $this->t('Back')?></a>
+<?php }?>
+	</div>
+	<div class="pages">
+		<?php echo $this->t('Images')?>
+		<?php echo $image_n+1?>
+		<?php echo $this->t('to')?>
+		<?php echo min($image_n+$per_page, $total_images)?>
+		<?php echo $this->t('of')?>
+		<?php echo $total_images?>
+	</div>
+	<div class="next">
+<?php if( $page < $total_pages ){?>
+		<a href="<?php echo $this->url('browse', 'username='.htmlspecialchars($username).'&g='.$gallery_id.'&i='.($image_n + $per_page).$extra_options)?>"><?php echo $this->t('Next')?></a>
+<?php }?>
+	</div>
+</div>
+
+<?php }else{ ?>
+
+<div class="paginate">
+	<div class="previous">
+<?php if( $prev_image ){?>
+		<a href="<?php echo $this->url('browse', 'username='.htmlspecialchars($username).'&g='.$gallery_id.'&i='.($image_n-1).'&view=1'.$extra_options)?>"><?php echo $this->t('Previous')?></a>
+<?php }?>
+	</div>
+
+	<div class="next">
+<?php if( $next_image ){?>
+		<a href="<?php echo $this->url('browse', 'username='.htmlspecialchars($username).'&g='.$gallery_id.'&i='.($image_n+1).'&view=1'.$extra_options)?>"><?php echo $this->t('Next')?></a>
+<?php }?>
+	</div>
+
+	<div class="pages">
+		<?php echo $this->t('Image')?>
+		<?php echo $image_n + 1?> <?php echo $this->t('of')?>
+		<?php echo $total_images?>
+		<a href="<?php echo $this->url('browse', 'username='.htmlspecialchars($username).'&g='.$gallery_id.'&i='.$image_n)?>"><?php echo $this->t('back to thumbnails')?></a>
+	</div>
+
+</div>
+
+<div class="theimage">
+	<a 	onClick="return si('<?php echo $image->image_url;?>', <?php echo $image->width;?>, <?php echo $image->height;?>);" 
+			href="<?php echo $image->image_url?>" target="_blank"><img border="0" src="<?php echo $image->image_url?>" alt="" style="width: <?php echo min($image->width, $this->app->config->browse_max_image_width)?>px;" /></a>
+	<br />
+    <?php if( $this->app->config->image_ratings != 'off' ) { ?>
+        <form id="rate" action="<?php echo $this->url('browse')?>" method="post">
+            <div id="options">
+            <input type="hidden" name="username" value="<?php echo htmlspecialchars($username)?>" />
+            <input type="hidden" name="g" value="<?php echo $gallery_id?>" />
+            <input type="hidden" name="id" value="<?php echo $image->image_id?>" />
+            <input type="hidden" name="view" value="1" />
+            <input type="hidden" name="rating" value="1" />
+            <?php if( $extra_options != '' ) { ?>
+                <input type="hidden" name="<?php echo preg_replace('#^&(.*)=images$#i', '$1', $extra_options)?>" value="images" />
+            <?php } ?>
+            <?php for( $i = 1; $i <= 10; $i ++ ) { ?>
+                <input name="rate_<?php echo $i?>" value="<?php echo $i?>" border="0" type="image" src="<?php echo $this->themesURL().'/default/gfx/r'.($i <= $image->rating ? 'on' : 'off').'.png'?>" title="<?php echo $this->t('Rate image ').$i.'/10'?>" />
+            <?php } ?>
+            (<?php echo $image->votes . ' ' . $this->t('votes')?>)
+            <div style="clear: left;"></div>
+            </div>
+        </form>
+    <?php } ?>
+	<b><?php echo $image->name . '.' . $image->type?></b>
+	<br />(<?php echo $image->width.'x'.$image->height?>), <?php echo $this->t('size')?> <?php echo number_format($image->filesize / 1024,2)?>kb
+    <?php if( $this->app->config->log_image_views ) { ?>
+        (<?php echo $image->views?> <?php echo $this->t('views')?>)
+    <?php } ?>
+    <br /><?php echo $this->t('Uploaded by')?> <a href="<?php echo $this->url('browse', 'username='.htmlspecialchars($image->username))?>"><?php echo htmlspecialchars($image->username)?></a>
+	<?php echo $this->t('on')?> <?php echo date('l jS F Y', strtotime($image->uploaded))?>
+	<?php if( $image->gallery_id ){ ?>
+	<br />
+	<?php echo $this->t('in gallery')?>
+	<a href="<?php echo $this->url('browse', 'g='.$image->gallery_id)?>"><?php echo htmlspecialchars($image->gallery_name)?></a>.
+	<?php } ?>
+
+<?php
+	if( $this->app->config->hotlink_thumbnails ){
+		if( $this->app->config->browse_thumb_embed ){
+			$thumb_embed = '<a href="'.$this->url('browse', 'view=1&id='.$image->image_id).'"><img src="'.$image->thumb_url.'" border="0" alt="Free image hosting by '.$this->app->config->siteurl.'" /></a>';
+?>
+		<div class="lcode">
+			<?php echo $this->t('Clickable Thumbnail HTML')?><br />
+			<input style="width: 80%;"  type="text" onfocus="this.select();" value="<?php echo htmlspecialchars($thumb_embed)?>" />
+		</div>
+
+<?php
+		}
+		if( $this->app->config->browse_thumb_bbcode ){
+			$thumb_code = '[url='.$this->url('browse', 'view=1&id='.$image->image_id).'][img]'.$image->thumb_url.'[/img][/url]';
+?>
+		<div class="lcode">
+			<?php echo $this->t('Thumbnail Forum BB Code')?><br />
+			<input style="width: 80%;"  type="text" onfocus="this.select();" value="<?php echo htmlspecialchars($thumb_code)?>" />
+		</div>
+<?php
+		}
+
+	}
+	if( $this->app->config->browse_thumb_links ){
+		$thumb_link = $image->thumb_url;
+?>
+	<div class="lcode">
+		<?php echo $this->t('Thumbnail URL')?><br />
+		<input style="width: 80%;"  type="text" onfocus="this.select();" value="<?php echo htmlspecialchars($thumb_link)?>" />
+	</div>
+<?php
+	}
+
+	if( $this->app->config->hotlink_images ){
+		if( $this->app->config->browse_image_embed ){
+			$image_embed = '<a href="'.$this->url('browse','view=1&id='.$image->image_id).'"><img src="'.$image->image_url.'" border="0" alt="Free image hosting by '.$this->app->config->siteurl.'" /></a>';
+?>
+		<div class="lcode">
+			<?php echo $this->t('Image HTML')?><br />
+			<input style="width: 80%;"  type="text" onfocus="this.select();" value="<?php echo htmlspecialchars($image_embed)?>" />
+		</div>
+
+<?php
+		}
+		if( $this->app->config->browse_image_bbcode ){
+			$image_code = '[url='.$this->url('browse', 'view=1&id='.$image->image_id).'][img]'.$image->image_url.'[/img][/url]';
+?>
+		<div class="lcode">
+			<?php echo $this->t('Image Forum BB Code')?><br />
+			<input style="width: 80%;"  type="text" onfocus="this.select();" value="<?php echo htmlspecialchars($image_code)?>" />
+		</div>
+<?php
+		}
+
+	}
+	if( $this->app->config->browse_image_links ){
+		$image_link = $image->image_url;
+?>
+	<div class="lcode">
+		<?php echo $this->t('Image URL')?><br />
+		<input style="width: 80%;" type="text" onfocus="this.select();" value="<?php echo htmlspecialchars($image_link)?>" />
+	</div>
+<?php
+	}
+
+?>
+
+</div>
+
+<div class="paginate">
+	<div class="previous">
+<?php if( $prev_image ){?>
+		<a href="<?php echo $this->url('browse','username='.htmlspecialchars($username).'&g='.$gallery_id.'&i='.($image_n-1).'&view=1'.$extra_options)?>"><?php echo $this->t('Previous')?></a>
+<?php }?>
+	</div>
+	<div class="next">
+<?php if( $next_image ){?>
+		<a href="<?php echo $this->url('browse','username='.htmlspecialchars($username).'&g='.$gallery_id.'&i='.($image_n+1).'&view=1'.$extra_options)?>"><?php echo $this->t('Next')?></a>
+<?php }?>
+	</div>
+	<div class="pages">
+		<?php echo $this->t('Image')?>
+		<?php echo $image_n + 1?>
+		<?php echo $this->t('of')?>
+		<?php echo $total_images?>.
+		<a href="<?php echo $this->url('browse', 'username='.htmlspecialchars($username).'&g='.$gallery_id.'&i='.$image_n.$extra_options)?>"><?php echo $this->t('back to thumbnails')?></a>
+	</div>
+
+</div>
+
+
+<?php } ?>

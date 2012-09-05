@@ -1,0 +1,39 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php
+echo $this->_t('Resize Image Content');
+if( $resized ) {
+	echo $this->_t('Image Resized Content');
+}
+?>
+<form action="<?php echo $this->url('resize')?>" method="post">
+<input type="hidden" name="i" value="<?php echo $iid;?>" />
+
+<div class="resizeform">
+	<div class="resizethumb"><a onClick="return si('<?php echo $image->image_url.'?'.time();?>', <?php echo $image->width;?>, <?php echo $image->height;?>);"  target="_blank" href="<?php echo $image->image_url.'?'.time();?>"><img border="0" class="thumb" src="<?php echo $image->thumb_url.'?'.time();?>" alt="" /></a>
+		<br />(<?php echo $image->width.'x'.$image->height;?>)
+	</div>
+	<div class="resizefields">
+		<?php echo $this->t('Resize')?> "<?php echo $image->name.'.'.$image->type;?>"<br />
+		<?php echo $this->t('New Size:')?> <input class="resizesize" value="<?php echo $image->width;?>" type="text" name="width" />
+		x
+		<input value="<?php echo $image->height;?>" class="resizesize" type="text" name="height" />
+		(<?php echo $this->t('max')?> <?php echo $user->max_image_width.'x'.$user->max_image_height;?>)<br />
+		<input type="submit" class="resizesubmit" name="resize" value="<?php echo $this->t('Resize Image')?>" />
+<?php
+if( $user->images < $user->max_images || $user->max_images == 0){
+?>
+<br /><input type="checkbox" name="copy" value="1" /> <?php echo $this->t('save resized image as a new image?')?>
+<?php
+}
+?>
+	</div>
+	<br clear="all" />
+		<i><?php echo $this->t('tip!')?></i> <?php echo $this->t('Leave either the width or height as 0 to have the image resized proportionally.')?>
+</div>
+</form>

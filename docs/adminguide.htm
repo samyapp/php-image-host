@@ -1,0 +1,249 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css" />
+<title>Php Image Host Administration Guide</title>
+</head>
+<body>
+<div class="fit">
+<div class="logo">
+Php Image Host Administration Guide
+</div>
+<div class="content">
+<h3>Administration Guide</h3>
+<p>
+This document provides information on using the administration pages for Php Image Host to manage your
+ image hosting site, its members, and the images they upload. There are eight separate sections in the admin area:
+</p>
+<ol>
+<li>
+<strong>Admin Home:</strong> This page just displays a quick link to and brief description of all the other pages.
+</li>
+<li>
+<strong>Images:</strong> Allows you to view and delete all uploaded images.
+</li>
+<li>
+<strong>Users:</strong> Search for, list, view, edit, add, upgrade and downgrade all registered members.
+</li>
+<li>
+<strong>Payments:</strong> List and view details of all account upgrade payments processed by the PayPal IPN script.
+</li>
+<li>
+<strong>Site Settings:</strong> Main control panel for site options and editing templates for any email
+ messages automatically sent by the site, for example when a new member signs up.
+</li>
+<li>
+<strong>Plan Details:</strong> Configure the different features for the free and the paid image hosting account 
+types.
+</li>
+<li>
+<strong>Banners:</strong> Manage the banner ads that are rotated at the top and bottom of each page of the site.
+</li>
+</ol>
+
+<h3>Images Admin</h3>
+
+<p>
+The images page lets you view a list of all images uploaded by your members.
+ Each listing includes a thumbnail version of the image that displays the full image in a new window when clicked. 
+</p>
+<p>
+The size of the image (in pixels and kbytes) together with the format (jpeg, gif or png), the date
+ it was uploaded and the member who uploaded it are also displayed next to each thumbnail.
+ Clicking on the name of the member lists all the images uploaded by that member. A &quot;View&quot; 
+link next to the member's username takes you to the member details page for that member.
+</p>
+<p>
+You can filter the list of images using the search box on the left of the page. 
+The list can be filtered by the following options: image name, dates uploaded between,
+ member, format and filesize. Images can be listed in ascending or descending order of name,
+ date uploaded, format and filesize.</p>
+<p>
+Images can be deleted in bulk (for example if a member is abusing the service) with just a couple of clicks,
+ by selecting the checkboxes next to the images to delete and clicking the &quot;Delete Selected Images&quot; 
+button.
+</p>
+
+<h3>Users Admin</h3>
+
+<p>
+The users admin page lets you manage all users who have signed up for your image hosting site.
+ This page lists the following information about each user: username, name, email address, date joined 
+(with I.P. address), the date they last logged in (with I.P. address), the number of images 
+they have uploaded (as a link to the images themselves), their account status, and their account type (free or paid).
+</p>
+<p>
+You can search for members by username, name and email, using * as a wildcard 
+(for example, *sam matches all users whose name ends in sam). 
+You can also search by the date that the users last logged in, or the date that they joined, 
+in addition to their account type (free, paid or all) and account status (unconfirmed email address,
+ confirmed, and suspended). 
+</p>
+<p>
+Users can be listed in ascending or descending order of name, username, date joined, last login date,
+ email address, account status, account type, and number of images uploaded.
+</p>
+<p>
+There are four bulk-edit options available for managing users. To bulk edit users you check the checkboxes
+ next to the users you want to edit and click one of the buttons at the bottom of the list.
+</p>
+<p>
+The options available are: 
+</p>
+<p>
+<strong>&quot;Upgrade Selected Users For n Days&quot;</strong> which makes gives the selected 
+users &quot;Paid Account&quot; status for an additional n days
+</p>
+<p>
+<strong>&quot;Downgrade Selected Users&quot;</strong> which makes all selected users' accounts &quot;Free&quot;.
+</p>
+<p>
+<strong>&quot;Change Selected Users Status To&quot;</strong> either <strong>unconfirmed</strong> 
+(which means that they have to click a link in an email sent to their email address to confirm it is real
+ before they can access their account, <strong>confirmed</strong>, which gives them access to their account, or <strong>suspended</strong> which stops them from accessing their account without actually 
+deleting the account and the images in it - useful if you are looking into reports of abuse of your 
+terms and conditions.
+</p>
+<p>
+<strong>&quot;Delete Selected Users&quot;</strong> deletes all the selected users from the database,
+ and also deletes all images they have uploaded from your server. <strong>This option is irreversible</strong>
+ so should only be used as a last resort. If you just need to stop a user from accessing their account
+ while you check if they are abusing your terms &amp; conditions, please change the selected users' status
+ to <strong>suspended</strong> instead.
+</p>
+<p>
+You can also edit the account details for a single user by clicking on their name. 
+This displays a form where you can edit their username, name, email address, password and account status. 
+You can manually <strong>add a new user</strong> by clicking the &quot;Add A New User&quot; link on 
+the bottom left of the page.
+</p><h3>Payments Admin</h3>
+<p>
+The payments page lists all payments that have been made via PayPal for account upgrades that have been 
+logged by the included PayPal Instant Payment Notification script. The following information is displayed 
+for each payment: PayPal transaction id#, the payer's PayPal email address, their username, account email 
+address, the date of the transaction and the amount. Full PayPal details of the transaction can be viewed
+ in a pop-up window by clicking the transaction id#.
+</p>
+<p>
+The payments list can be filtered by username, user email address, PayPal email address, PayPal transaction id#, 
+and date received, and can be displayed in ascending or descending order of date, transaction id#, amount,
+ PayPal email address, user email address and username. 
+</p>
+<p>
+Payment records can be deleted from the database  by checking the checkboxes next to the payments 
+and clicking the <strong>&quot;Delete Selected Payments&quot;</strong> button. <strong>IMPORTANT: </strong>
+this does not refund, or affect in any way, the actual payments made or the balances of the PayPal accounts. 
+It just removes the payment history from your site's database.
+</p>
+
+<h3>Site Settings Page</h3>
+
+<p>
+This page is used to setup and configure most of your image hosting site's settings,
+ and is divided into 7 sections:
+</p>
+<p>
+<strong>Admin Settings</strong> include the username and password you use to login to the admin area
+ (please change these from the default &quot;admin&quot; / &quot;password&quot; ASAP), your email address
+ (that messages submitted via the contact form are sent to), and a checkbox that can be used to turn on or
+ off the ability for new members to sign up for an account.
+</p>
+<p>
+<strong>General Site Settings</strong> include the name for your site (modifying this here 
+changes it on all pages of the site), the full url of your site (which should be in the format
+ <a href="http://www.yoursite.com/">http://www.yoursite.com/</a>), and an option to temporarily 
+disable all image uploads (for example if you need time to investigate abuse of your terms &amp; conditions).
+</p>
+<p>
+<strong>Image Settings</strong> lets you set the maximum width and height for the thumbnail images 
+automatically generated when a user uploads an image, as well as specifiying the urls and path to the folders
+ on your servers where uploaded images and generated thumbnails are stored. These <strong>must</strong> be
+ set correctly for your site to function properly.
+</p>
+<p>
+<strong>Image Branding Options</strong> allow you to customize the branding watermark that can be added to images
+ uploaded by your users (normally only used on free accounts). You can specify the text, size, color, background
+ color and transparency, as well as set a minimum width and height for images that the branding will be added to.
+</p>
+<p>
+<strong>Payment Settings</strong> lets you specify your PayPal email address (where payments are made to when
+ users upgrade their accounts), as well as the subject and message for the confirmation email which is
+ automatically sent to them if PayPal Instant Payment Notification is turned on for your account.
+ The message can contain certain &quot;tags&quot; which are replaced with the relevant values
+ (for example, {username} is replaced by the member's username). See the settings page itself 
+for a full list of these tags.
+</p>
+<p>
+<strong>Email Images Settings</strong> lets you customize the email subject and message that is sent when a 
+member emails links to their uploaded images to their friends from within their control panel. 
+You can add anything you want to this email message template, including your own advertising; 
+just make sure you remember to include the {imagelinks} tag to provide the links back to their images.
+</p>
+<p>
+<strong>Member Email Settings</strong> allows you to customize the email subject and message for emails sent
+ to members when they sign up for a free account or request a password reminder. 
+A full description of the tags that can be used in these messages is displayed on the settings page below the 
+forms to edit them.
+</p>
+
+<h3>Plan Details</h3>
+
+<p>
+The Plan Details page lets you specify the limits and featured for the free and paid account types that
+ your member's can sign up for. In addition to setting the name for each type of account and the price
+ for a paid account for 30 days, you can set the following options for each account type: total allowed
+ images, maximum upload filesize, maximum image width and height (and whether to automatically resize
+ oversized images, or reject them), as well as whether to automatically convert all uploads to jpegs
+ (reducing your bandwidth usage) and the jpeg quality level to save them as (higher = better quality,
+ larger file size).
+</p>
+<p>
+Additionally, the simultaneous uploads number refers to the number of images a member can upload in one go,
+ &quot;thumbnails per page&quot; refers to the number of their images that are listed on each page of
+ their account page (less per page = more page impressions for you), and the &quot;email images to friends&quot;
+ option specifies how many email addresses they can send links to their images to at one time.
+</p>
+<p>
+The final option gives you the choice of adding your own branding watermark to every image
+ uploaded for each account type. For more information, see the <strong>Image Branding Options</strong>
+ section in the settings admin above.
+</p>
+
+<h3>Page Content Admin</h3>
+<p>
+The page content admin area lets you edit most of the text that appears on the pages of your images hosting site.
+ You can select which bit of content to edit by selecting it from the drop down box at the top of the page.
+ You will then be able to edit the html content in the textarea. Remember to click the &quot;Update Content&quot;
+ button to save your changes when you have finished editing them.
+</p>
+<p>
+The option to create new page content only applies if you have added extra pages to your site and want to use
+ this page to edit the content on them. For an example of displaying content edited here see the source code 
+in the faq.php script.
+</p>
+<p>
+When editing the page content, remember that it will be displayed directly as html, so you need to include
+ the relevant html tags such as &lt;br /&gt; for a line break, etc.
+</p>
+
+<h3>Banners Admin</h3>
+
+<p>
+Your image hosting site contains code to rotate banner adverts at the top and bottom of every page of the site.
+ You can add and edit these banners in the &quot;<strong>Banners</strong>&quot; section of the site admin area.
+</p>
+<p>
+To allow for the most flexibility in the type of banners displayed, you must enter the html to display the
+ banner directly (this means that if you are displaying banners with your own images, you have to manually
+ upload them to your site).
+</p>
+<p>
+This does mean that the banners displayed can be in any format (image, flash, or even plain text or html,
+ like google adsense). You can view banners, set them to active or inactive, and delete them in this section.
+</p>
+</div>
+<div class="footer">
+All content copyright &copy; 2004 <a target="_blank" href="http://www.phpimagehost.com/">Php Image Host</a>. All Rights Reserved.
+</div>
+</div>
+</body>
+</html>

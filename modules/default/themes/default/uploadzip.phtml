@@ -1,0 +1,92 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php echo $this->_t('Upload Zip Content')?>
+<?php
+// display message(s) if any images successfully uploaded
+if( count($uploaded) > 0 ){
+?>
+<br /><br /><b><?php echo $this->t('The following image(s) were successfully uploaded:')?></b><br /><br />
+<?php
+
+	foreach( $uploaded as $img ){
+?>
+<div class="uploadedthumb" style="width: <?php echo $config->thumbnail_width+20;?>; height: <?php echo $config->thumbnail_height+20;?>;">
+<a target="_blank" href="<?php echo $img->image_url;?>" onClick="return si('<?php echo $img->image_url;?>', <?php echo $img->width;?>, <?php echo $img->height;?>);"><img src="<?php echo $img->thumb_url;?>" alt="<?php echo $this->t('click for full size')?>" border="0" /></a> 
+</div>
+<?php
+	}
+?>
+<br clear="all" />
+<?php
+
+}
+if( ($user->max_images == 0 || $user->images < $user->max_images ) &&
+		($user->bandwidth == 0 || $user->bandwidth_used < $user->bandwidth) && 
+		($user->storage == 0 || $user->storage_used < $user->storage) && 
+		$config->allow_uploads && $user->allow_zip_uploads ){
+
+	// if the user can upload any more images, display the upload form.
+	// more than one file upload input will be displayed if the user's account
+	// type settings specify it.
+
+?>
+<form action="<?php echo $this->url('uploadzip')?>" method="post" enctype="multipart/form-data">
+<div class="uploadform">
+	<h2><?php echo $this->t('Upload a Zip Archive of Images From Your PC')?></h2>
+	<div class="instructions">
+        <?php echo $this->t('Click the "Browse" button to select a zip archive containing images to upload from your PC.')?>
+	</div>
+	<div class="uploadfield">
+		<input class="uploadinput" type="file" name="images" />
+	</div>
+<?php
+if( count($user->galleries) > 0 ){
+
+?>
+	<h2><?php echo $this->t('Add Uploaded Images To Gallery:')?></h2>
+	<div class="instructions"><?php echo $this->t('You can (optionally) select one of your galleries to add these images to.')?></div>
+	<div class="uploadfield">
+		<select class="uploadgallery" name="gallery_id">
+			<option value="0"><?php echo $this->t('No Gallery')?></option>
+<?php
+		foreach( $user->galleries as $id=>$g ){
+			echo "<option value=\"$id\">".htmlspecialchars($g->gallery_name)."</option>\n";
+		}
+?>
+		</select>
+	</div>
+<?php
+	
+	}
+?>
+<?php if( $this->app->config->browse_images ){?>
+	<div class="uploadfield">
+		<input type="checkbox" name="public" value="1" <?php if( $public ) echo ' checked="checked" '?> />
+		<?php echo $this->t('Make these images public? (available when browsing images)')?>
+	</div>
+<?php } ?>
+	<div id="uploadprogress" style="display: none; text-align: center; height: 3em; margin: 1em; background: url(<?php echo $this->app->config->siteurl?>loading.gif) no-repeat center;"><?php echo $this->t('Uploading - Please Wait...')?></div>
+	<div class="uploadfield"><input onclick="document.getElementById('uploadprogress').style.display = 'block';" class="uploadsubmit"  type="submit" name="upload" value="<?php echo $this->t('Upload Images')?>" /></div>
+</div>
+</form>
+<?php
+}else{
+	// display a message informing the user that they cannot upload any more images, unless they
+	// either upgrade their account or delete some existing ones.
+	if( $config->allow_uploads && extension_loaded('zlib')){
+		if( $user->bandwidth != 0 && $user->bandwidth_used > $user->bandwidth){
+			echo $this->_t('Monthly Bandwidth Limit Reached Content');
+        }else if( !$user->allow_zip_uploads ) {
+            echo $this->_t('Your account does not allow uploading zip archives of images');
+		}else{
+			echo $this->_t('Image Limit Reached Content');
+		}
+	}else{
+		echo $this->_t('Uploads Suspended Content');
+	}
+}

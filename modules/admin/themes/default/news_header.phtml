@@ -1,0 +1,14 @@
+<h1>Manage Site News</h1>
+<div>
+    <a href="<?php echo $this->url('news', 'add=1')?>">Add News</a>
+    <a href="<?php echo $this->url('news', 'nstatus=unpublished')?>">Unpublished News</a>
+    <a href="<?php echo $this->url('news', 'nstatus=published')?>">Published News</a>
+    <a href="<?php echo $this->url('news', 'nstatus=archived')?>">Archived News</a>
+    <a href="<?php echo $this->url('news', 'nstatus=hidden')?>">Hidden News</a>
+    <a href="<?php echo $this->url('news')?>">All News</a>
+</div>
+<?php if( $message ) { ?>
+    <div class="notice">
+    <?php echo $message?>
+    </div>
+<?php }?>

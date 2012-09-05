@@ -1,0 +1,74 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<div style="text-align: center;">
+<b>Banned IP Addresses</b><br /><br />
+Use this page to ban or unban i.p addresses or ranges from using your site.
+</div>
+<br /><br />
+<?php
+if( $added > 0 ){
+?>
+<div class="errors"><?php echo $added.' i.p. addresses added to the banned list.';?></div>
+<?php
+}
+
+if( $deleted > 0 ){
+?>
+<div class="errors"><?php echo $deleted.' i.p. addresses removed from the banned list.';?></div>
+<?php
+}
+
+?>
+<form action="<?php echo $this->url('ips')?>" method="post">
+<table class="formtable" cellspacing="1" cellpadding="0" border="0" align="center" >
+<tr>
+	<td class="formlabel">Ban i.p Addresses:</td>
+	<td class="formfield" style="width: 300px;"><textarea name="tobebanned" class="forminput" style="height: 100px;"></textarea>
+		<br />List the i.p addresses you want to ban, one per line. To ban a range of i.p. addresses
+		leave off the last . after the numbers to match.
+		<br />For example, to ban all i.p. addresses in the range 127.0.1.x, enter: 127.0.1 on a line above.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">&nbsp;</td>
+	<td class="formfield"><input type="submit" name="ban" value="Ban ip Addresses" /></td>
+</tr>
+</table>
+<?php
+	$ips = $this->app->getbannedips();
+	$bannedips = '';
+	if( count($ips) > 0 ){
+?>
+<div class="errors">The following <?php echo count($ips);?> i.p. addresses are banned from using your site:<br /><br />
+<div style="width: 200px; margin: 20px auto; text-align: left; color: black; font-weight: normal;">
+<?php
+		foreach( $ips as $i ){
+			$bannedips .= "deny from $i\n";
+?><input type="checkbox" name="ids[]" value="<?php echo $i;?>" /> <?php echo $i;?><br /><?php
+		}
+?>
+</div>
+<input type="button" onClick="check(this.form,true);" value="Select All" />
+<input type="button" onClick="check(this.form,false);" value="Select None" />
+<input type="button" onClick="invert(this.form);" value="Invert Selection" />
+<noscript>
+<br />The buttons above require javascript to be enabled in order to function.
+</noscript>
+<br /><br /><input type="submit" name="unban" value="Unban The Selected ip Addresses" />
+<br /><br />
+Ban i.p. addresses with .htaccess:
+<br />Copy and paste the lines below into your .htaccess file if you would prefer to ban i.p. these i.p.
+addresses using that method. If using .htaccess to ban i.p. addresses you may want to turn off the
+uncheck the "Ban I.P Addresses" box on the <a href="<?php echo $this->url('settings')?>">settings page</a>.
+<br /><br />
+<textarea class="forminput" style="height: 200px;" onFocus="this.select();"><?php echo $bannedips;?></textarea>
+</div>
+<?php
+	}
+?>
+</form>

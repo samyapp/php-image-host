@@ -1,0 +1,161 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php echo $this->_t('Galleries Content')?>
+<?php
+if( count($errors) > 0 ){
+?>
+<div class="errors">
+	<?php echo $this->t('The following errors occurred:')?>
+	<br /><br /><?php echo join("<br />\n", $errors);?>
+</div>
+<?php
+}
+
+if( $message != '' ){
+?>
+<div class="message"><?php echo $message;?></div>
+<?php
+}
+
+if( count($user->galleries) >= $user->max_galleries ){
+	if( $gaction == 'add' ) $gaction = '';
+}else{
+?>
+<div style="text-align: center; margin: 15px; font-weight: bold;">
+	<a href="<?php echo $this->url('galleries','gaction=add#addg')?>"><?php echo $this->t('Create A New Gallery')?></a></div>
+<?php
+}
+
+switch( $gaction ){
+	case 'add':
+?>
+<form gaction="<?php echo $this->url('galleries')?>" method="post">
+<div style="text-align: center;"><a name="addg"></a>
+<div class="galleryform">
+	<div class="galleryheading"><?php echo $this->t('Create A New Gallery')?></div>
+	<div class="gallerylabel"><?php echo $this->t('Gallery Name:')?></div>
+	<input class="gallerynameinput" type="text" name="name" />
+	<div class="gallerylabel"><?php echo $this->t('Gallery Introduction:')?></div>
+	<textarea class="galleryintrotext" name="intro"></textarea>
+	<br /><?php echo $this->t('(optionally) enter a short introduction to your gallery.')?>
+	<input class="gallerysubmit" type="submit" name="addgallery" value="Create New Gallery" />
+</div>
+</div>
+</form>
+<?php
+		break;
+	case 'edit':
+?>
+<form gaction="<?php echo $this->url('galleries')?>" method="post">
+<input type="hidden" name="g" value="<?php echo $gallery->gallery_id;?>" />
+<div style="text-align: center;"><a name="editg"></a>
+<div class="galleryform">
+	<div class="galleryheading">
+		<?php echo $this->t('Edit Gallery')?> 
+		"<?php echo htmlspecialchars($gallery->gallery_name);?>"
+	</div>
+	<div class="gallerylabel"><?php echo $this->t('Gallery Name:')?></div>
+	<input class="gallerynameinput" type="text" name="name" value="<?php echo htmlspecialchars($gallery->gallery_name);?>" />
+	<div class="gallerylabel"><?php echo $this->t('Gallery Introduction:')?></div>
+	<textarea class="galleryintrotext" name="intro" ><?php echo htmlspecialchars($gallery->gallery_intro);?></textarea>
+	<br /><?php echo $this->t('(optionally) enter a short introduction to your gallery.')?>
+	<input class="gallerysubmit" type="submit" name="updategallery" value="<?php echo $this->t('Update Gallery Details')?>" />
+</div>
+</div>
+</form>
+<?php
+		break;
+}
+
+if( count($user->galleries) > 0 ){
+?>
+<form gaction="<?php echo $this->url('galleries')?>" method="post">
+<table class="imagetable" cellspacing="1" cellpadding="0" border="0" align="center" style="width: 95%;">
+<tr>
+	<td class="imagetitle" colspan="2" style="text-align: center;"><?php echo $this->t('Manage Your Image Galleries')?></td>
+</tr>
+<?php
+	$tr = 0;
+	foreach( $user->galleries as $id=>$g ){
+        $gurl = $this->url('gallery', 'u='.$user->username.'&g='.$g->gallery_name);
+?>
+<tr class="tr<?php echo ($tr+1);?>">
+	<td class="tdcheck"><input type="checkbox" name="ids[]" value="<?php echo $g->gallery_id;?>" <?php if( in_array($g->gallery_id, $ids) ) echo ' CHECKED ';?>/></td>
+	<td class="tdlabel">
+		<b><a target="_blank" href="<?php echo $gurl;?>"><?php echo $g->gallery_name;?>
+		(<?php echo $g->images;?> 
+		<?php echo $this->t('images')?>)</a></b>
+		<br /><i><?php echo nl2br(htmlspecialchars($g->gallery_intro));?></i>
+		<br />
+		[<a href="<?php echo $this->url('galleries','g='.$id.'&gaction=edit#editg')?>"><?php echo $this->t('Edit')?></a>]
+		[<a href="<?php echo $this->url('galleries','g='.$id.'&delete=1')?>" onClick="return confirm('<?php echo $this->t("Are you sure you want to delete this gallery?")?>');"><?php echo $this->t('Delete')?></a>]
+		[<a href="<?php echo $this->url('myimages','g='.$g->gallery_id)?>">Manage Images</a>]
+		<br /><br /><b><?php echo $this->t('Gallery URL:')?></b>
+		<br /><input onFocus="this.select();" type="text" class="galleryurlinput" value="<?php echo htmlspecialchars($gurl);?>" />
+		<br /><br /><b><?php echo $this->t('HTML Link:')?></b>
+		<br /><input onFocus="this.select();" type="text" class="galleryurlinput" value="<?php echo htmlspecialchars('<a href="'.$gurl.'">'.$g->gallery_name.'</a>');?>" />
+	</td>
+</tr>
+<?php
+		$tr = 1-$tr;
+	}
+	if( $user->email_friends > 0 ){
+?>
+<tr>
+	<td colspan="2" class="imagetitle"><a name="email"></a>&nbsp;</td>
+</tr>
+<tr>
+	<td class="imagetitle">&nbsp;</td>
+	<td class="imagetitle" style="text-align: center;">
+		<b><?php echo $this->t('Email The Selected Galleries To Your Friends!')?></b>
+	</td>
+</tr>
+<tr class="tr1">
+	<td class="tdcheck">&nbsp;</td>
+	<td class="tdinfo" style="text-align: left;">
+		<b><?php echo $this->t('Enter Your Friends Email Address:')?>
+		</b><br />
+<?php
+	for( $i = 0; $i < $user->email_friends; $i++){
+?>
+		<input type="text" name="to[]" value="<?php echo htmlspecialchars($emails[$i]);?>" class="urlinput" style="width: 90%;" />
+		<br />
+<?php
+	}
+?>
+	<br />
+<?php if( $user->email_friends > 1 ){ ?>
+<?php echo $this->t('Enter a single email address to send your selected galleries to in each of the boxes above.')?>
+<?php echo $this->t('You can send ').$user->email_friends.$this->t(' emails at once.')?>
+<?php }else{ ?>
+<?php echo $this->t('Enter the email address of the friend you want to send these galleries to in the box above.')?>
+<?php } ?>
+<br />
+<?php echo $this->t('We respect your privacy. We do not store the email addresses submitted via this form.')?>
+	</td>
+</tr>
+<tr class="tr1">
+	<td class="tdcheck">&nbsp;</td>
+	<td class="tdthumb" style="text-align: left;">
+		<b><?php echo $this->t('Short Message (max 255 characters)')?></b><br />
+		<br /><textarea name="msg" class="urlinput" style="width: 90%; height: 60px;"><?php echo htmlspecialchars($msg);?></textarea>
+		<br /><?php echo $this->t('This message will be included in the email.')?>
+	</td>
+</tr>
+<tr class="tr1">
+	<td class="tdcheck">&nbsp;</td>
+	<td class="tdinfo"><input type="submit" name="send" value="<?php echo $this->t('Email The Selected Galleries')?>" style="width: 90%;" /></td>
+</tr>
+<?php 
+}
+?>
+</table>
+</form>
+<?php
+}
+

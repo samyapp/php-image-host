@@ -1,0 +1,61 @@
+body, td, table, div, p, input, select, textarea, h3, h4{
+	font-family: verdana, arial;
+	font-size: 9pt;
+}
+
+body{
+	text-align: center;
+
+}
+
+.fit{
+	width: 700px;
+	margin: 30px auto;
+	text-align: left;
+}
+
+.content{
+	text-align: left;
+}
+
+.navbar{
+	text-align: left;
+}
+
+.logo{
+	text-align: left;
+	font-size: 120%;
+	font-weight: bold;
+	margin: 10px;
+}
+
+.content{
+	width: 500px;
+	margin-top: 20px;
+}
+
+a:link, a:visited{
+	color: blue;
+}
+
+a:hover{
+	color: red;
+}
+
+h3{
+	font-size: 110%;
+	margin-top: 15px;
+}
+
+li{
+	margin-bottom: 10px;
+}
+
+.footer{
+	text-align: center;
+	color: #555555;
+}
+
+.footer a{
+	color: #555555;
+}

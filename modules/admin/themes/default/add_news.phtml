@@ -1,0 +1,19 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php echo $this->render('news_header')?>
+<h2>Add a news article</h2>
+<form action="<?php echo $this->url('news')?>" method="post">
+    <fieldset>
+        <legend>Enter the headline and click &quot;Add News&quot;</legend>
+        <p>
+            <label for="headline">Headline</label>
+            <input id="headline" name="headline" class="longtext" />
+        </p>
+        <input type="submit" name="create" value="Add News" />
+    </fieldset>
+</form>

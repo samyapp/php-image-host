@@ -1,0 +1,42 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php
+echo $this->_t('Confirm Content');
+?>
+<form name="confirmform" action="<?php echo $this->url('confirm')?>" method="post">
+<div class="memberform">
+<table align="center" class="membertable" cellspacing="1" cellpadding="0" border="0">
+<tr>
+	<td colspan="2" class="memberheading"><?php echo $this->t('Confirm Your Account')?></td>
+</tr>
+<tr>
+	<td class="memberlabel"><?php echo $this->t('Username:')?></td>
+	<td class="memberfield"><input class="memberinput" type="text" name="username" value="<?php echo htmlspecialchars($username);?>" />
+		<br /><?php echo $this->t('Enter the username you chose when you signed up.')?>
+	</td>
+</tr>
+<tr>
+	<td class="memberlabel"><?php echo $this->t('Confirmation ID#:')?></td>
+	<td class="memberfield"><input class="memberinput" type="text" name="cid" value="<?php echo htmlspecialchars($cid);?>" />
+		<br />
+		<?php echo $this->t('Enter the confirmation id included in your sign-up email. If you have lost this email we can')?>
+		<a href="<?php echo $this->url('remind')?>"><?php echo $this->t('resend it')?></a>.
+	</td>
+</tr>
+<tr>
+	<td class="memberlabel">&nbsp;</td>
+	<td class="memberfield"><input class="memberinput" type="submit" name="confirm" value="<?php echo $this->t('Confirm Account')?>" /></td>
+</tr>
+</table>
+</div>
+</form>
+<script language="JavaScript" type="text/javascript">
+<!--
+document.forms.confirmform['username'].focus();
+//-->
+</script>

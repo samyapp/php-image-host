@@ -1,0 +1,77 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css" />
+<title>Php Image Host Installation Guide</title>
+</head>
+<body>
+<div class="fit">
+<div class="logo">
+Php Image Host Installation Guide
+</div>
+<div class="content">
+<h3>Installing Php Image Host</h3>
+<p>
+    <strong>PHP Image Host REQUIRES php 5 or greater and the gd image library</strong>
+</p>
+<p>Follow the steps below to install your copy of Php Image Host:</p>
+<ol>
+<li>
+Create a mysql database on your site to use with Php Image Host. If you do not know how to do this ask 
+your web hosting company.
+</li>
+
+<li>
+    Unzip the phpimagehost.zip archive to an empty folder on your computer.
+</li>
+<li>
+    Edit the "/includes/db.conf.php.sample" file with your own database settings and
+    save it as "/includes/db.conf.php".
+</li>
+<li>
+Upload the contents of the phpimagehost archive to your web server.
+</li>
+<li>
+Set the permissions on the &quot;<strong>/images</strong>&quot; &quot;<strong>/thumbs</strong>&quot;
+and &quot;<strong>/temp</strong>&quot; directories so that php scripts can write to them. 
+<br /><br />
+If your server is apache and has mod_rewrite enabled you should also create a file called <strong>.htaccess</strong>
+in the root directory of your installation and set the permissions on that file so the script can 
+write to it too.<br /><br />
+This is required to support bandwidth monitoring and search engine friendly urls.
+file so that the script can create the rules in this file for monitoring image bandwidth and search
+engine friendly urls.
+<br /><br />
+If you do not know how to do this, please ask your web hosting company, or ask for help in the
+<a href="http://forum.phpace.com/">support forum</a>.
+</li>
+<li>
+    In your webbrowser, navigate to the url where you have uploaded the files.
+</li>
+<li>
+    If you entered the correct database settings in the db.conf.php file above
+    you should see the installation screen. If you get error messages about the
+    database then check your database settings in the <strong>/includes/db.conf.php</strong> file.
+    <br /><br />
+    If you get other errors then please ask for help in the <a href="http://forum.phpace.com/">support forum</a>.
+</li>
+
+<li>
+    Now enter the information required by the form. Then submit the form to install.
+</li>
+<li>If the install process has worked, you should be able to login to your admin area
+ using the username <strong>admin</strong> and the password <strong>password</strong>.
+ Please change the admin username and password <strong>immediately</strong> on the admin settings page.
+</li>
+
+<li>
+<strong>Congratulations!</strong> Your new image hosting site is setup and ready to go :)
+</li>
+
+</ol>
+</div>
+<div class="footer">
+All content copyright &copy; 2004,2009 <a target="_blank" href="http://www.phpace.com/">phpAce.com</a>. All Rights Reserved.
+</div>
+</div>
+</body>
+</html>

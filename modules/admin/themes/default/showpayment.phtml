@@ -1,0 +1,44 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<html>
+<head>
+<title><?php echo !$payment ? 'Invalid Payment Id#' : 'Payment Transaction Id# '.htmlspecialchars($payment->txn_id);?></title>
+<link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+<body>
+<?php if( $payment  ){ ?>
+<div style="text-align: center; font-weight: bold;">Payment Data For Transaction Id# <?php echo htmlspecialchars($payment->txn_id);?></div><br /><br />
+<table class="formtable" cellspacing="1" cellpadding="0" border="0" align="center" style="background-color: #555555;">
+<tr>
+	<th>PayPal Variable</th>
+	<th>Paypal Value</th>
+</tr>
+<?php
+	$data = unserialize($payment->paypal_data);
+	$tr = 1;
+	foreach( $data as $d=>$v ){
+		if( !is_array($v ) ){
+			$tr = 1-$tr;
+?>
+<tr class="tr<?php echo ($tr+1);?>">
+	<td style="font-weight: bold; text-align: left;"><?php echo htmlspecialchars($d);?></td>
+	<td style="text-align: left;"><?php echo htmlspecialchars($v);?></td>
+</tr>
+<?php
+		}
+	}
+?>
+</table>
+<?php }else{ ?>
+<div style="text-align: center; font-weight: bold;">Invalid Payment Id#</div><br /><br />
+<?php } ?>
+<div style="margin-top: 30px; text-align: center;">
+<a onClick="window.close();" href="#">Close Window</a>
+</div>
+</body>
+</html>

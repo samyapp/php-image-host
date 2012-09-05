@@ -1,0 +1,197 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php
+
+$free =& $plans['free'];
+$paid =& $plans['paid'];
+$anon = &$plans['anonymous'];
+
+
+// display a table comparing the features for free and paid accounts.
+
+?>
+<table class="plantable" cellspacing="1" cellpadding="0" border="0" align="center">
+<tr class="tr1">
+	<td class="planname"><?php echo $this->t('Features')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planname"><?php echo $this->t('Non-members')?></td>
+    <?php } ?>
+	<td class="planname"><?php echo $this->t($free->type_name)?></td>
+	<td class="planname"><?php echo $this->t($paid->type_name)?></td>
+</tr>
+<tr class="tr2">
+	<td class="planlabel"><?php echo $this->t('Supported image formats')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $this->t('jpeg, gif and png')?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo $this->t('jpeg, gif and png')?></td>
+	<td class="planvalue"><?php echo $this->t('jpeg, gif and png')?></td>
+</tr>
+<tr class="tr1">
+	<td class="planlabel"><?php echo $this->t('Browse your uploaded images')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $this->t('No')?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo $this->t('Yes')?></td>
+	<td class="planvalue"><?php echo $this->t('Yes')?></td>
+</tr>
+<tr class="tr2">
+	<td class="planlabel"><?php echo $this->t('Image thumbnails?')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $this->t('Yes')?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo $this->t('Yes')?></td>
+	<td class="planvalue"><?php echo $this->t('Yes')?></td>
+</tr>
+<tr class="tr1">
+	<td class="planlabel"><?php echo $this->t('Number of images allowed')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $this->t('Unlimited')?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo ($free->max_images > 0 ? $free->max_images : $this->t('Unlimited*'))?></td>
+	<td class="planvalue"><?php echo ($paid->max_images > 0 ? $paid->max_images : $this->t('Unlimited*'))?></td>
+</tr>
+<tr class="tr2">
+	<td class="planlabel"><?php echo $this->t('Storage Space')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $this->t('Unlimited')?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo ($free->storage > 0 ? $free->storage.'mb' : $this->t('Unlimited*'))?></td>
+	<td class="planvalue"><?php echo ($paid->storage > 0 ? $paid->storage.'mb' : $this->t('Unlimited*'))?></td>
+</tr>
+<tr class="tr1">
+	<td class="planlabel"><?php echo $this->t('Monthly Bandwidth')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $this->t('Unlimited')?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo ($free->bandwidth > 0 ? $free->bandwidth.'mb' : $this->t('Unlimited*'))?></td>
+	<td class="planvalue"><?php echo ($paid->bandwidth > 0 ? $paid->bandwidth.'mb' : $this->t('Unlimited*'))?></td>
+</tr>
+<tr class="tr2">
+	<td class="planlabel"><?php echo $this->t('Maximum upload file size')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo number_format($anon->max_upload_size,0);?>k</td>
+    <?php } ?>
+	<td class="planvalue"><?php echo number_format($free->max_upload_size,0);?>k</td>
+	<td class="planvalue"><?php echo number_format($paid->max_upload_size,0);?>k</td>
+</tr>
+<?php if( $free->allow_zip_uploads || $paid->allow_zip_uploads ) { ?>
+<tr>
+   <td class="planlabel"><?php echo $this->t('Upload images in zip archives')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+   <td class="planvalue"><?php echo $anon->allow_zip_uploads ? $this->t('Yes') : $this->t('No')?></td>
+    <?php } ?>
+   <td class="planvalue"><?php echo $free->allow_zip_uploads ? $this->t('Yes') : $this->t('No')?></td>
+   <td class="planvalue"><?php echo $paid->allow_zip_uploads ? $this->t('Yes') : $this->t('No')?></td>
+</tr>
+<?php } ?>
+<tr class="tr1">
+	<td class="planlabel"><?php echo $this->t('Maximum image dimensions')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $anon->max_image_width.'x'.$anon->max_image_height;?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo $free->max_image_width.'x'.$free->max_image_height;?></td>
+	<td class="planvalue"><?php echo $paid->max_image_width.'x'.$paid->max_image_height;?></td>
+</tr>
+<tr class="tr2">
+	<td class="planlabel"><?php echo $this->t('Auto-resize oversized images?')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $anon->auto_resize ? $this->t('Yes') : $this->t('No')?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo $free->auto_resize ? $this->t('Yes') : $this->t('No')?></td>
+	<td class="planvalue"><?php echo $paid->auto_resize ? $this->t('Yes') : $this->t('No')?></td>
+</tr>
+<tr class="tr1">
+	<td class="planlabel"><?php echo $this->t('All images converted to jpegs?')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $anon->auto_jpeg ? $this->t('Yes - some loss of quality') : $this->t('No - no loss of quality')?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo $free->auto_jpeg ? $this->t('Yes - some loss of quality') : $this->t('No - no loss of quality')?></td>
+	<td class="planvalue"><?php echo $paid->auto_jpeg ? $this->t('Yes - some loss of quality') : $this->t('No - no loss of quality')?></td>
+</tr>
+<tr class="tr2">
+	<td class="planlabel"><?php echo $this->t('Branding added on to images')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $anon->add_branding ? $this->t('URL added to bottom') : $this->t('None')?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo $free->add_branding ? $this->t('URL added to bottom') : $this->t('None')?></td>
+	<td class="planvalue"><?php echo $paid->add_branding ? $this->t('URL added to bottom') : $this->t('None')?></td>
+</tr>
+<tr class="tr1">
+	<td class="planlabel"><?php echo $this->t('Simultaneous uploads?')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $anon->simultaneous_uploads > 1 ? $this->t('Yes - ').$anon->simultaneous_uploads : $this->t('No - 1 image at a time')?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo $free->simultaneous_uploads > 1 ? $this->t('Yes - ').$free->simultaneous_uploads : $this->t('No - 1 image at a time')?></td>
+	<td class="planvalue"><?php echo $paid->simultaneous_uploads > 1 ? $this->t('Yes - ').$paid->simultaneous_uploads : $this->t('No - 1 image at a time')?></td>
+</tr>
+
+<tr class="tr2">
+	<td class="planlabel"><?php echo $this->t('Rename Your Images?')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $this->t('No')?></td>
+    <?php } ?>
+	<td class="planvalue"><?php echo $free->rename_images ? $this->t('Yes') : $this->t('No')?></td>
+	<td class="planvalue"><?php echo $paid->rename_images ? $this->t('Yes') : $this->t('No')?></td>
+</tr>
+<tr class="tr1">
+	<td class="planlabel"><?php echo $this->t('Resize Your Images?')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $this->t('No')?></td>
+
+    <?php } ?>
+	<td class="planvalue"><?php echo $free->resize_images ? $this->t('Yes') : $this->t('No')?></td>
+	<td class="planvalue"><?php echo $paid->resize_images ? $this->t('Yes') : $this->t('No')?></td>
+</tr>
+<tr class="tr1">
+	<td class="planlabel"><?php echo $this->t('Rotate Your Images?')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $this->t('No')?></td>
+
+    <?php } ?>
+	<td class="planvalue"><?php echo $free->rotate_images ? $this->t('Yes') : $this->t('No')?></td>
+	<td class="planvalue"><?php echo $paid->rotate_images ? $this->t('Yes') : $this->t('No')?></td>
+</tr>
+<tr class="tr2">
+	<td class="planlabel"><?php echo $this->t('Image Galleries?')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $this->t('No')?></td>
+
+    <?php } ?>
+	<td class="planvalue"><?php echo $free->max_galleries == 0 ? $this->t('No') : $free->max_galleries?></td>
+	<td class="planvalue"><?php echo $paid->max_galleries == 0 ? $this->t('No') : $paid->max_galleries?></td>
+</tr>
+
+<tr class="tr1">
+	<td class="planlabel"><?php echo $this->t('Email images to your friends')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+	<td class="planvalue"><?php echo $this->t('No')?></td>
+
+    <?php } ?>
+	<td class="planvalue"><?php echo $free->email_friends > 0 ? $this->t('Yes').' - '.$free->email_friends.$this->t(' at once') : $this->t('No')?></td>
+	<td class="planvalue"><?php echo $paid->email_friends > 0 ? $this->t('Yes').' - '.$paid->email_friends.$this->t(' at once') : $this->t('No')?></td>
+</tr>
+<tr class="tr2">
+	<td class="planlabel"><?php echo $this->t('Price')?></td>
+    <?php if( $this->app->config->anonymous_uploads ) { ?>
+    <td class="planvalue">&nbsp;</td>
+    <?php } ?>
+	<td class="planvalue"><b><a href="<?php echo $this->url('join')?>"><?php echo $this->t('FREE')?><br /><?php echo $this->t('Join Now!')?></a></b></td>
+	<td class="planvalue"><b><a href="<?php echo $this->url('upgrade')?>">$<?php echo number_format($paid->cost_1,2);?><br /><?php echo $this->t('Upgrade Now')?></a></b></td>
+</tr>
+</table>
+<?php
+
+if( $free->storage == 0 || $paid->storage == 0 || $free->bandwidth == 0 || $paid->bandwidth == 0 || $free->max_images == 0 || $paid->max_images == 0 ){
+?>
+<div style="text-align: center;">
+<b><?php echo $this->t('Unlimited*')?></b>
+<?php echo $this->t('Other limitations (bandwidth, storage space, etc, still apply).')?>
+</div>
+<?php
+}

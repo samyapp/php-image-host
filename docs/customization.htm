@@ -1,0 +1,120 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css" />
+<title>Php Image Host Customization Guide</title>
+</head>
+<body>
+<div class="fit">
+<div class="logo">
+Php Image Host Customization Guide
+</div>
+<h1>THIS FILE IS VERY OUT OF DATE</h1>
+<p><a target="_blank" href="http://support.phpace.com/">Visit the php image host support forum</a> for help and advice regarding customizing this script.</p>
+<div class="content">
+<h3>Customizing Your Php Image Host Site</h3>
+<p>
+Your php image host site can be customized in several different ways: options in the admin control panel allow
+you to change plan features, disallow new account sign ups and uploads, edit most of the text content that appears
+on pages of the site and edit the templates for all email messages sent automatically via the site and the
+general design of the site can be altered by editing the css style definitions in the styles.css file
+</p>
+<h3>Basic Customization</h3>
+<p>
+The first thing to do (if you haven't already done it) is to change the name of the site.
+ You can do this on the <strong>settings</strong> page in the site admin.
+ Changing the value you here will be reflected on all pages on the site automatically.
+ Also make sure that you set up your email address and other options correctly on this page.
+</p>
+<p>
+The next thing you will want to do is change the logo to your own.
+ The simplest way to do this is to replace the file <strong>logo.jpg</strong> with your own logo.
+ If your logo is in another format, or you want to remove the logo and replace it with text,
+ you will need to edit the <strong>header.php</strong> file.</p>
+
+<h3>Customizing the Design</h3>
+
+<p>
+You can change all the content that appears in the column on the right hand side of every page
+ by editing the <strong>sidepanel.inc.php</strong> file in the <strong>includes</strong> folder.
+ This is a good place to add google adsense code, and or links to your other sites or partner sites.
+ It appears on every page of the site. If you would prefer this panel to appear on the left of every page,
+ follow the instructions in the <strong>styles.css</strong> file (just a couple of small changes are required).
+</p>
+<p>
+To make further changes to the layout of the site, including the width of the page,
+ the font, colors, and background colors, edit the css style definitions in the <strong>styles.css</strong> file.
+ This file contains comments describing what each style definition is used for.
+</p>
+<p>
+To customize the actual html of the site itself, start with editing the file <strong>header.php</strong> 
+(for the header and navigation bar) and <strong>footer.php</strong>.
+</p>
+
+<h3>Customizing The Content</h3>
+<p>
+You can edit most of the page content (the text) for your site in the <strong>Page Content</strong> section
+ of the site admin area. Just select the template to edit from the drop down list, and you can enter the html
+ directly. There are about 30 different page sections that can be edited, but mostly you may find that you have no need to edit any of them. Some pages with more complex content have additional
+ php files that you can also edit if you need to. A summary of the different page sections you can edit,
+ and revelant php files is below:
+</p>
+<p>
+<strong>Home Page:</strong> All the text that appears in the top half of the home page can be edited in
+ the page content area. The bottom half of the home page (listing the different plans) is contained
+ in the <strong>index.php</strong> file. The plan details are updated automatically when you modify them 
+on the <strong>Plans</strong> page in the admin area.
+</p>
+<p>
+<strong>FAQ, Terms &amp; Conditions &amp; Privacy Policy:</strong> Each of these pages has its own template 
+that you can edit in the <strong>Page Content</strong> section. There is nothing to edit for these pages
+ in their php files.
+</p>
+<p>
+<strong>Contact Page:</strong> There are two different messages that are displayed on this page, both of which 
+can be edited on the <strong>Page Content</strong> page in the admin. The first is the text that is
+ displayed above the contact form, and the second (<strong>&quot;Contact Submitted&quot;</strong>) 
+is displayed when the form has been submitted. You can edit the form itself if you need to by editing 
+the <strong>contact.php</strong> file, or by editing the relevant css style definitions in the
+ <strong>styles.css</strong> file.
+</p>
+<p>
+<strong>My Images:</strong> There are three page content sections that can be edited for the
+ <strong>My Images</strong> page (the page that lists all images that a member has uploaded).
+ The main <strong>Images</strong> page content is always displayed on this page. The other 
+two (<strong>No Images</strong> and <strong>Images - Not Logged In</strong>) are displayed on this page when 
+the member has either not uploaded any images yet, or is not logged in to their account. You can customize the
+ look of the list of images by editing the relevant css style definitions in <strong>styles.css</strong>, 
+and can edit the general design of the list of images by editing the <strong>images.php</strong> file.
+</p>
+<p>
+<strong>Upload:</strong> As with the <strong>My Images</strong> page, their are three different bits of 
+content associated with this page. An introduction, always displayed at the top of the <strong>Upload</strong> page,
+ <strong>Uploads - Not Logged In</strong> which is displayed when the user is not logged in to their account,
+ and <strong>Image Limit Reached</strong> which is displayed when the member has reached their quota of
+ uploaded images for their account.
+</p>
+<p>
+<strong>Upgrade:</strong> There are four possible pieces of page content that may be displayed on the 
+<strong>Upgrade Account</strong> page. An introduction content, a <strong>Not Logged In</strong> message
+ (members are required to already have an account and be logged into it before they upgrade),
+ a message to display to members with free accounts, and a message displayed if the member has already upgraded
+ their account (they can use the form on the upgrade page to add an additional 30 days to their account).
+ All other content (paypal button, etc) on the <strong>Upgrade</strong> page is contained in the
+ <strong>upgrade.php</strong> file.
+</p>
+<p>
+<strong>Member Pages:</strong> There are also four pages used for member account functions, joining, logging in,
+ requesting a password reminder, and confirming their account email addresses, each of which displays a
+ different bit of content depending on whether the user is filling in the form on the page, has submitted 
+the form, or is already logged in. All of these can be edited on the <strong>Page Content</strong> page of the
+ site admin. Two other bits of content that can be edited are <strong>Not Logged In</strong> which may be
+ displayed on pages where login is required, and <strong>Logged In</strong>, which is displayed on member pages
+ when the member is already logged in, in place of the forms (password reminder, sign up, etc).
+</p>
+</div>
+<div class="footer">
+All content copyright &copy; 2004 <a target="_blank" href="http://www.phpimagehost.com/">Php Image Host</a>. All Rights Reserved.
+</div>
+</div>
+</body>
+</html>

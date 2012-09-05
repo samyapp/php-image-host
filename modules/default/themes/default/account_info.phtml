@@ -1,0 +1,43 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php 
+if( $user ){ 
+	$ims = $user->images.' '.$this->t('of').' '.($user->max_images == 0 ? $this->t('unlimited') : $user->max_images);
+	$bws = $user->bandwidth_used.'mb '.$this->t('of').' '.($user->bandwidth == 0 ? $this->t('unlimited') : $user->bandwidth.'mb');
+	if( $user->bandwidth != 0 ) $bws = ceil($user->bandwidth_used/$user->bandwidth*100).'% ('.$bws.')';
+	$sto = $user->storage_used.$this->t('mb of').' '.($user->storage == 0 ? $this->t('unlimited') : $user->storage.'mb');
+	if( $user->storage != 0 ) $sto = ceil($user->storage_used/$user->storage*100).'% ('.$sto.')';
+	$ac = $this->t($user->type_name);
+	if( $user->type_type == 'free' ) $ac = '<a href="'.$this->url('upgrade').'">'.$ac.'</a>';
+?>
+<div class="userinfo">
+<?php echo $this->t('Account Summary For')?>
+ <span class="uivalue"><?php echo $user->username;?></span>
+(<a href="<?php echo $this->url('login','logout=1')?>"><?php echo $this->t('logout')?></a>):
+<?php echo $this->t('Bandwidth Used:')?>
+<span class="uivalue"><?php echo $bws;?></span>.
+<br />
+<?php echo $this->t('Space Used:')?>
+<span class="uivalue"><?php echo $sto;?></span>.
+<?php echo $this->t('Images Uploaded:')?>
+ <span class="uivalue"><?php echo $ims;?></span>.
+<?php if( $user->bandwidth_used > $user->bandwidth && $user->bandwidth > 0 ){ ?>
+    <div style="text-align: center; padding-top: 4px;font-weight: bold; color: red;">
+        <?php echo $this->t('Monthly Bandwidth Limit Exceeded!')?>
+    </div>
+<?php } ?>
+</div>
+<?php }else{ ?>
+<form action="<?php echo $this->url('login')?>" method="post">
+    <?php echo $this->t('Username')?>
+    <input type="text" name="username" />
+    <?php echo $this->t('Password')?>
+    <input type="password" name="password" />
+    <input type="submit" name="login" value="<?php echo $this->t('Login')?>" />
+</form>
+<?php } ?>

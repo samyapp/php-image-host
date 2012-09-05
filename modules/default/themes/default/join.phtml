@@ -1,0 +1,72 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<?php
+echo $this->_t('Sign Up Content');
+?>
+<form name="joinform" action="<?php echo $this->url('join')?>" method="post">
+<div class="memberform">
+<table align="center" class="membertable" cellspacing="1" cellpadding="0" border="0">
+<tr>
+	<td colspan="2" class="memberheading"><?php echo $this->t('Create An Account')?></td>
+</tr>
+<tr>
+	<td class="memberlabel"><?php echo $this->t('Your Name:')?></td>
+	<td class="memberfield"><input class="memberinput" type="text" name="name" value="<?php echo htmlspecialchars($name);?>" />
+		<br /><?php echo $this->t('Enter the name you wish to be addressed by in any correspondence with this site.')?>
+	</td>
+</tr>
+<tr>
+	<td class="memberlabel"><?php echo $this->t('Username:')?></td>
+	<td class="memberfield"><input class="memberinput" type="text" name="username" value="<?php echo htmlspecialchars($username);?>" />
+		<br /><?php echo $this->t('Choose a username. Your username must be between 6 and 20 characters long and can only contain alphanumeric characters (a-z and 0-9).')?>
+	</td>
+</tr>
+<tr>
+	<td class="memberlabel"><?php echo $this->t('Email:')?></td>
+	<td class="memberfield"><input class="memberinput" type="text" name="email" value="<?php echo htmlspecialchars($email);?>" />
+		<br /><?php echo $this->t('Enter your email address. If you forget your password, we can send a reminder to this email address.')?>
+		<?php if( $config->email_confirmation == 1 ){ ?>
+		<?php echo $this->t('We will send a confirmation email to this address containing instructions on how to finish creating your account.')?>
+		<?php } ?>
+	</td>
+</tr>
+<tr>
+	<td class="memberlabel"><?php echo $this->t('Repeat Email:')?></td>
+	<td class="memberfield"><input class="memberinput" type="text" name="remail" value="<?php echo htmlspecialchars($remail);?>" />
+		<br /><?php echo $this->t('Please repeat your email address here to confirm you have entered it correctly.')?>
+	</td>
+</tr>
+<tr>
+	<td class="memberlabel"><?php echo $this->t('Password:')?></td>
+	<td class="memberfield"><input class="memberinput" type="password" name="password" />
+		<br /><?php echo $this->t('Choose a password to use when logging in to this site. Your password must be between 6 and 20 characters long and contain only alphanumeric characters (a-z and 0-9).')?>
+	</td>
+</tr>
+<tr>
+	<td class="memberlabel"><?php echo $this->t('Repeat Password:')?></td>
+	<td class="memberfield"><input class="memberinput" type="password" name="rpassword" />
+		<br /><?php echo $this->t('Please repeat the password you have chosen to confirm its spelling.')?>
+	</td>
+</tr>
+<tr>
+	<td class="memberlabel"><input type="checkbox" name="agree" value="1" /></td>
+	<td class="memberfield"><?php echo $this->t('I have read and agree to the ')?>
+	<a target="_blank" href="<?php echo $this->url('terms')?>"><?php echo $this->t('terms and conditions')?></a> <?php echo $this->t('of this site.')?></td>
+</tr>
+<tr>
+	<td class="memberlabel">&nbsp;</td>
+	<td class="memberfield"><input class="memberinput" type="submit" name="join" value="<?php echo $this->t('Create Account')?>" /></td>
+</tr>
+</table>
+</div>
+</form>
+<script language="JavaScript" type="text/javascript">
+<!--
+document.forms.joinform['name'].focus();
+//-->
+</script>

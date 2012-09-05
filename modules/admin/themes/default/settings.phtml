@@ -1,0 +1,588 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<div style="text-align: center;">
+<b>Site Settings</b><br /><br />
+Edit the values on this page to change general site and image settings.
+</div>
+<br /><br />
+<?php
+if( count($errors) > 0 ){
+?>
+<div class="errors">Please correct the following errors:<br /><br /><?php echo join("<br />\n", $errors);?></div>
+<?php
+}
+
+if( $updated ){
+?>
+<div class="errors">Admin Settings Saved.</div>
+<?php
+}
+
+?>
+<form action="<?php echo $this->url('settings')?>" method="post">
+<table class="formtable" cellspacing="1" cellpadding="0" border="0" align="center" width="90%">
+<tr>
+	<td class="formheading" colspan="2">Admin Settings</td>
+</tr>
+<tr>
+	<td class="formlabel">Show Errors?</td>
+	<td class="formfield"><input type="checkbox" name="show_errors" value="1" <?php if( $this->app->config->show_errors ) echo ' checked="checked" '?> />
+	 Tick this box to display php warnings and notices (useful for debugging any problems with the script). Untick it once the
+		script is installed and functioning correctly.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Admin Username:</td>
+	<td class="formfield"><input class="forminput" type="text" name="admin_username" value="<?php echo htmlspecialchars($this->app->config->admin_username);?>" />
+		<br />The username used to login to this admin area.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Admin Password:</td>
+	<td class="formfield"><input class="forminput" type="text" name="admin_password" value="<?php echo htmlspecialchars($this->app->config->admin_password);?>" />
+		<br />The password used to login to this admin area.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Admin Email:</td>
+	<td class="formfield"><input class="forminput" type="text" name="admin_email" value="<?php echo htmlspecialchars($this->app->config->admin_email);?>" />
+		<br />The email address that the contact form submits to.
+	</td>
+</tr>
+
+<tr>
+	<td class="formlabel">Temporarily Disable The Site:</td>
+	<td class="formfield"><input type="checkbox" name="disable_site" value="1" <?php if( $this->app->config->disable_site == 1 ) echo ' CHECKED ';?> />
+		<br />Check this box to temporarily disable the site (for example whilst upgrading / updating).
+        Enter a message below that will be displayed to your site visitors whilst the site is disabled. You can use HTML tags.
+        <br />
+        <textarea name="site_disabled_message" class="forminput" style="height: 50px;"><?php echo htmlspecialchars($this->app->config->site_disabled_message)?></textarea>
+	</td>
+</tr>
+
+
+<tr>
+	<td class="formheading" colspan="2">General Site Settings</td>
+</tr>
+<tr>
+	<td class="formlabel">Site Name:</td>
+	<td class="formfield"><input class="forminput" type="text" name="sitename" value="<?php echo htmlspecialchars($this->app->config->sitename);?>" />
+		<br />The name for this website. This is displayed on certain pages of the site.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Site URL:</td>
+	<td class="formfield"><input class="forminput" type="text" name="siteurl" value="<?php echo htmlspecialchars($this->app->config->siteurl);?>" />
+		<br />The url for your site, including the http://
+	</td>
+</tr>
+<tr>
+    <td class="formlabel">Temporary Directory:</td>
+    <td class="formfield"><input class="forminput" type="text" name="temp_dir" value="<?php echo htmlspecialchars($this->app->config->temp_dir)?>" />
+        <br />The directory to store temporary files (uploaded images from zip archives, etc) in. The permissions on this directory
+        must be set so that the script can create subdirectories and files in it.
+    </td>
+</tr>
+<tr>
+	<td class="formheading" colspan="2">Security Settings</td>
+</tr>
+<tr>
+	<td class="formlabel">Allow Sign Ups:</td>
+	<td class="formfield"><input type="checkbox" name="allow_signups" value="1" <?php if( $this->app->config->allow_signups == 1 ) echo ' CHECKED ';?> />
+		<br />Check this box to allow new members to sign up to the site.
+	</td>
+</tr>
+
+<tr>
+	<td class="formlabel">Allow Uploads:</td>
+	<td class="formfield"><input type="checkbox" name="allow_uploads" value="1" <?php if( $this->app->config->allow_uploads == 1 ) echo ' CHECKED ';?> />
+		<br />Check this box to allow your members to upload their own images.
+		<br />This box should normally be checked. The only reason for unchecking this box is if your site is being abused
+			and you need to stop <b>all</b> image uploads while you resolve the problem.
+		<br />No members can upload <b>any</b> images when this box is not checked.
+		<br />You can edit the "Uploads Suspended" message which is displayed when this box is unchecked in the language file.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Ban IP Addresses?</td>
+	<td class="formfield"><input type="checkbox" name="ban_ips" value="1" <?php if( $this->app->config->ban_ips == 1 ) echo ' CHECKED ';?> />
+		<br />Check this box to have the script automatically ban visitors from i.p. addresses specified on
+		the <a href="<?php echo $this->url('ips')?>">banned ip address page</a> from logging in, signing up or uploading images.
+		<br />Uncheck this box if you are using .htaccess files to ban i.p. addresses instead.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Site Theme:</td>
+	<td class="formfield">
+		<select name="theme">
+		<?php foreach( $themes as $theme_name ) { ?>
+			<option value="<?php echo htmlspecialchars($theme_name)?>"<?php if( $theme_name == $this->app->config->theme) echo ' SELECTED="yes" '?>><?php echo htmlspecialchars($theme_name)?></option>
+		<?php } ?>
+		<br />Select the theme / design to use on this website. If you are customizing a theme, save your files in the "custom" theme folder
+		and they will be used automatically.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">CSS Stylesheet:</td>
+	<td class="formfield">
+		<select name="stylesheet">
+		<?php foreach( $stylesheets as $style_name ) { ?>
+			<option value="<?php echo htmlspecialchars($style_name)?>"<?php if( $style_name == $this->app->config->stylesheet) echo ' SELECTED="yes" '?>><?php echo htmlspecialchars($style_name)?></option>
+		<?php } ?>
+		<br />Select the css stylesheet to use with the selected theme.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Site Language:</td>
+	<td class="formfield">
+		<select name="language">
+		<?php foreach( $languages as $language_name ) { ?>
+			<option value="<?php echo htmlspecialchars($language_name)?>"<?php if( $language_name == $this->app->config->language) echo ' SELECTED="yes" '?>><?php echo htmlspecialchars($language_name)?></option>
+		<?php } ?>
+		<br />Select the language file to use for your website. If you are customizing the file, name it "custom.php" and save it in
+		the languages directory and your changes will be used automatically (and not overridden if you update this script).
+	</td>
+</tr>
+<tr>
+	<td class="formheading" colspan="2">Image Settings</td>
+</tr>
+
+<tr>
+	<td class="formlabel">Image Folder:</td>
+	<td class="formfield"><input type="text" class="forminput" name="image_folder" value="<?php echo htmlspecialchars($this->app->config->image_folder);?>" />
+		<br />Enter the full path on your server to the folder to store uploaded images in (eg. /home/yoursite/public_html/images).
+		<br />This folder must have the correct permissions for the scripts to be able to create and delete files in it.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Image Folder URL:</td>
+	<td class="formfield"><input type="text" class="forminput" name="image_url" value="<?php echo htmlspecialchars($this->app->config->image_url);?>" />
+		<br />Enter the full url (including domain name and http://) for the folder where images are stored, including the
+			trailing slash "/". (eg. http://www.mysite.com/images/ )
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Thumbnail Folder:</td>
+	<td class="formfield"><input type="text" class="forminput" name="thumb_folder" value="<?php echo htmlspecialchars($this->app->config->thumb_folder);?>" />
+		<br />Enter the full path on your server to the folder to store uploaded image thumbnails in (eg. /home/yoursite/public_html/thumbnails).
+		<br />This folder must have the correct permissions for the scripts to be able to create and delete files in it.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Thumbnail Folder URL:</td>
+	<td class="formfield"><input type="text" class="forminput" name="thumb_url" value="<?php echo htmlspecialchars($this->app->config->thumb_url);?>" />
+		<br />Enter the full url (including domain name and http://) for the folder where thumbnail images are stored, including the
+			trailing slash "/". (eg. http://www.mysite.com/thumbs/ )
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Thumbnail Width:</td>
+	<td class="formfield"><input type="text" class="formnumber"  name="thumbnail_width" value="<?php echo $this->app->config->thumbnail_width;?>" />
+		<br />The width for the automatically generated thumbnail images.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Thumbnail Height:</td>
+	<td class="formfield"><input type="text" class="formnumber" name="thumbnail_height" value="<?php echo $this->app->config->thumbnail_height;?>" />
+		<br />The height for the automatically generated thumbnail images.
+	</td>
+</tr>
+<tr>
+    <td class="formlabel">Thumbnail Format:</td>
+    <td class="formfield">
+        <select name="thumb_format">
+            <option value="jpeg">JPEG</option>
+            <option value="auto"<?php if( $this->app->config->thumb_format == 'auto' ) echo ' selected="selected" '?>>Auto-detect Best Format</option>
+            <option value="original"<?php if( $this->app->config->thumb_format == 'original' ) echo ' selected="selected" '?>>Use original image format</option>
+        </select>
+        <br />The image format to use for thumbnail images. JPEG normally creates the smallest file sizes,
+        but results in loss of transparency for gif or png images that have transparency or alpha channel.
+        <br />&quot;Use original format&quot; always uses the format of the original image.
+        <br />Auto-detect will create a jpeg thumbnail unless the image has transparency / alpha-channel information
+        in which case the thumbnail will be saved as a PNG or GIF.
+    </td>
+</tr>
+<tr>
+	<td class="formlabel">Max Gallery Image Width:</td>
+	<td class="formfield"><input type="text" class="formnumber"  name="gallery_max_image_width" value="<?php echo $this->app->config->gallery_max_image_width;?>" />
+		<br />The maximum width to display images on the gallery pages.
+		<br />Images will be proportionally resized with html to fit this size. Full size images can still be
+		viewed by clicking on the image.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Max Gallery Image Height:</td>
+	<td class="formfield"><input type="text" class="formnumber" name="gallery_max_image_height" value="<?php echo $this->app->config->gallery_max_image_height;?>" />
+		<br />The maximum height to display images on the gallery pages.
+		<br />Images will be proportionally resized with html to fit this size. Full size images can still be
+		viewed by clicking on the image.
+	</td>
+</tr>
+<tr>
+    <td class="formlabel">Path to ImageMagick:</td>
+    <td class="formfield"><input type="text" class="forminput" name="imagick_path" value="<?php echo $this->escape($this->app->config->imagick_path)?>" />
+        <br />The path to ImageMagick on this server. Leave this blank to use the GD image library for all image conversions.
+        <br /><input type="checkbox" name="debug_imagick" value="1" <?php if( $this->app->config->debug_imagick) echo ' checked="checked" ';?> />
+        Check this box to echo some debugging information onto the page when using imagemagick.
+    </td>
+</tr>
+
+
+
+<tr>
+	<td class="formheading" colspan="2">Browse Images Settings</td>
+</tr>
+<tr>
+	<td class="formlabel">Enable Browsing?</td>
+	<td class="formfield">
+		<input type="checkbox" style="width: 25px;" name="browse_images" value="1" <?php if( $this->app->config->browse_images) echo ' checked="checked" '?> />
+		Check this box to allow users to browse uploaded images.
+	</td>
+</tr>
+
+<tr>
+	<td class="formlabel">Only browse checked?</td>
+	<td class="formfield">
+		<input type="checkbox" style="width: 25px;" name="browse_checked_only" value="1" <?php if( $this->app->config->browse_checked_only) echo ' checked="checked" '?> />
+		Check this box to hide images from browsing until checked by site admin.
+	</td>
+</tr>
+
+<tr>
+	<td class="formlabel">Thumbnails Per Page</td>
+	<td class="formfield">
+		<input type="text" size="5" name="browse_per_page" value="<?php echo $this->app->config->browse_per_page?>" />
+		The number of thumbnail images to display on each page when browsing images.
+	</td>
+</tr>
+
+<tr>
+	<td class="formlabel">Browsing Maximum Image Width</td>
+	<td class="formfield">
+		<input type="text" size="5" name="browse_max_image_width" value="<?php echo $this->app->config->browse_max_image_width?>" />
+		The maximum width to display images at when browsing them.
+	</td>
+</tr>
+
+<tr>
+	<td class="formlabel">Random Images - Per Page</td>
+	<td class="formfield">
+		<input type="text" size="5" name="random_per_page" value="<?php echo $this->app->config->random_per_page?>" /><br />
+		The number of thumbnails to display on the random images page.
+	</td>
+</tr>
+
+<tr>
+	<td class="formlabel">Log Image Views?</td>
+	<td class="formfield">
+		<input type="checkbox" style="width: 25px;" name="log_image_views" value="1" <?php if( $this->app->config->log_image_views) echo ' checked="checked" '?> />
+		Check this box to count the number of views images get.
+        This will enable the "popular" images page on your site.
+        <b>Note:</b> Image views are logged once per visitor per 24 hours.
+        This is tracked through cookies and sessions and is not perfect.
+        It also means an extra database update every time a view is logged which
+        may result in extra load on your server.
+	</td>
+</tr>
+
+<tr>
+	<td class="formlabel">Image Rating</td>
+	<td class="formfield">
+        <select name="image_ratings">
+            <option value="off">No Image Rating</option>
+            <option value="members"<?php if( $this->app->config->image_ratings == 'members' ) echo ' selected="selected" '?>>Members Only</option>
+            <option value="anyone"<?php if( $this->app->config->image_ratings == 'anyone' ) echo ' selected="selected" '?>>Anyone</option>
+        </select>
+        Turn on image ratings and select who can rate images (members only or anyone).
+        Images can be rated once per day per user but this is only restricted through the use of sessions and cookies so
+        it is possible to abuse the setting to rate an image multiple times.
+        <br /><br />Turning this on activates the option for users to browse "Top Rated" images.
+	</td>
+</tr>
+
+<tr>
+	<td class="formlabel">Upload Public Default</td>
+	<td class="formfield">
+		<select name="upload_public_default">
+			<option value="0">Private</option>
+			<option value="1"<?php if( $this->app->config->upload_public_default ) echo ' selected="selected" '?>>Public</option>
+		</select>
+		<br />
+		Whether the default option for uploads is to make the images publicly viewable or private.
+	</td>
+</tr>
+
+<tr>
+	<td class="formheading" colspan="2">Image Branding Options</td>
+</tr>
+<tr>
+	<td class="formlabel">Branding Text:</td>
+	<td class="formfield"><input class="forminput" type="text" name="branding_text" value="<?php echo htmlspecialchars($this->app->config->branding_text);?>" />
+		<br />The branding text appears on images uploaded by members whose account type settings require it.
+		<br />The branding text is normally your url.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Branding Text Size:</td>
+	<td class="formfield"><input class="formnumber" type="text" name="branding_size" value="<?php echo $this->app->config->branding_size;?>" />
+		<br />The font size to use when adding branding text to images.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Branding Text Color:</td>
+	<td class="formfield"><input class="formnumber" type="text" name="branding_color" value="<?php echo $this->app->config->branding_color;?>" />
+		<br />The color to use when adding branding text to images, in html format (eg. #ffffff for white).
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Branding Text Font:</td>
+    <td class="formfield">
+        <select name="branding_font">
+        <?php foreach( $branding_fonts as $font ) { ?>
+            <option value="<?php echo $font?>"<?php if( $font == $this->app->config->branding_font ) echo ' selected="selected" '?>><?php echo $font?></option>
+        <?php } ?>
+        </select>
+		<br />The font to use when branding the image. Fonts are stored in the
+        directory <?php echo APP_DIR . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'fonts'?>.
+        <br />For the GD image library you must have php compiled with freetype support to use custom fonts.<br />
+        Your server does <?php if( !function_exists('imagefttext') ) echo '<b>NOT</b>'?> have support for custom fonts.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Branding Background Color:</td>
+	<td class="formfield"><input class="formnumber" type="text" name="branding_bgcolor" value="<?php echo $this->app->config->branding_bgcolor;?>" />
+		<br />The background color to use when adding branding text to images, in html format (eg. #000000 for black).
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Branding Background Transparency:</td>
+	<td class="formfield">
+		<select name="branding_transparency">
+<?php
+	for( $i = 0; $i <= 100; $i+=10){
+		$sel = $this->app->config->branding_transparency == $i ? ' SELECTED ' : '';
+		echo "<option value=\"$i\"$sel>$i%</option>\n";
+	}
+?>
+		</select>
+		<br />The branding background color can be transparent, allowing most of the image to show through.
+		<br />Values range from 0% (fully opaque) to 100% (fully transparent background).
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Minimum Image Width For Branding:</td>
+	<td class="formfield"><input class="formnumber" type="text" name="min_branding_width" value="<?php echo $this->app->config->min_branding_width;?>" />
+		<br />Branding will <b>not</b> be added to images if their width is less than this number.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Minimum Image Height For Branding:</td>
+	<td class="formfield"><input class="formnumber" type="text" name="min_branding_height" value="<?php echo $this->app->config->min_branding_height;?>" />
+		<br />Branding will <b>not</b> be added to images if their height is less than this number.
+	</td>
+</tr>
+
+<tr>
+	<td class="formheading" colspan="2">New Account Settings</td>
+</tr>
+<tr>
+	<td class="formlabel">Confirm Email Addresses?</td>
+	<td class="formfield"><input type="checkbox" name="email_confirmation" value="1" <?php if( $this->app->config->email_confirmation) echo ' CHECKED ';?> />
+		Check this box to require all new members to confirm their email address is valid before they can use their accounts.
+		<br />Confirmation is handled by sending a unique id in their sign-up email that they have to enter to confirm
+		the email address they enter is valid.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Confirmation Key Code:</td>
+	<td class="formfield"><input type="text" class="forminput" name="email_confirmation_key" value="<?php echo htmlspecialchars($this->app->config->email_confirmation_key);?>" />
+		<br />Enter a random code here. This is used to generate the email confirmation key code that is sent to new members
+		(as described above). This key code can be anything you want. It is never displayed to your members. It is just used
+		to ensure that users cannot fake the confirmation code when they sign up.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">New Account Email From:</td>
+	<td class="formfield"><input class="forminput" name="signup_email_from" value="<?php echo htmlspecialchars($this->app->config->signup_email_from);?>" />
+		<br />The email address to use as the "From" and "Reply To" address for the email automatically sent to new members
+		when they create an account.
+	</td>
+</tr>
+<tr>
+    <td class="formlabel">New Account Email Subject:</td>
+	<td class="formfield"><input class="forminput" name="signup_email_subject" value="<?php echo htmlspecialchars($this->app->config->signup_email_subject);?>" />
+		<br />The subject for new account welcome emails.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">New Account Email Template:</td>
+	<td class="formfield"><textarea name="signup_email_template" class="forminput" style="height: 100px;"><?php echo htmlspecialchars($this->app->config->signup_email_template);?></textarea>
+		<br />The template for the message that is sent to a new member when they create an account.
+		<br /><br />You can use the following tags in the template:
+		<br /><b>{username}</b> will be replaced by their username.
+		<br /><b>{name}</b> will be replaced by their name.
+		<br /><b>{password}</b> will be replaced by their password.
+        <br /><b>{confirmurl}</b> will be replaced by the url to the confirmation page.
+		<br /><b>{confirmid}</b> will be replaced with the confirmation code they need to enter to confirm their email
+		address and activate their account.
+		<br /><b>{sitename}</b> will be replaced by the name of your website as specified above.
+		<br /><b>{siteurl}</b> will be replaced by the url of your website as specified above.
+		<br /><br />Additionally, anything inside the tags &lt;confirm&gt;...&lt;/confirm&gt; will be removed
+		when you have the requirement to confirm all new accounts turned off.
+		<br /><br />You can always add your own advertising and / or affiliate links and messages at the bottom
+		of this email template.
+	</td>
+</tr>
+
+<tr>
+	<td class="formheading" colspan="2">Password Reminder Settings</td>
+</tr>
+<tr>
+	<td class="formlabel">Password Reminder Email From:</td>
+	<td class="formfield"><input class="forminput" name="reminder_email_from" value="<?php echo htmlspecialchars($this->app->config->reminder_email_from);?>" />
+		<br />The email address used as the "From" and "Reply-To" address on emails sent to members when they request a password reminder.
+	</td>
+</tr>
+<tr>
+    <td class="formlabel">Password Reminder Email Subject:</td>
+	<td class="formfield"><input class="forminput" name="reminder_email_subject" value="<?php echo htmlspecialchars($this->app->config->reminder_email_subject);?>" />
+		<br />The subject for password reminder emails.
+	</td>
+</tr>
+
+<tr>
+	<td class="formlabel">Password Reminder Message:</td>
+	<td class="formfield"><textarea name="reminder_email_template" class="forminput" style="height: 100px;"><?php echo htmlspecialchars($this->app->config->reminder_email_template);?></textarea>
+		<br />The template for the message that is sent when a member requests a password reminder. This message can include
+		the confirmation link if the member has not yet confirmed their account.
+		<br /><br />You can use the following tags in the template:
+		<br /><b>{username}</b> will be replaced by their username.
+		<br /><b>{name}</b> will be replaced by their name.
+		<br /><b>{password}</b> will be replaced by their password.
+        <br /><b>{confirmurl}</b> will be replaced by the url to the confirmation page.
+		<br /><b>{confirmid}</b> will be replaced with the confirmation code they need to enter to confirm their email
+		address and activate their account.
+		<br /><b>{sitename}</b> will be replaced by the name of your website as specified above.
+		<br /><b>{siteurl}</b> will be replaced by the url of your website as specified above.
+		<br /><br />Additionally, anything inside the tags &lt;confirm&gt;...&lt;/confirm&gt; will be removed
+		when you have the requirement to confirm all new accounts turned off.
+		<br /><br />You can always add your own advertising and / or affiliate links and messages at the bottom
+		of this email template.
+	</td>
+</tr>
+
+<tr>
+	<td class="formheading" colspan="2">Bandwidth Exceeded Emails</td>
+</tr>
+<tr>
+	<td class="formlabel">Send Notifications?:</td>
+	<td class="formfield"><input type="checkbox" name="notify_bandwidth_exceeded" value="1" <?php if( $this->app->config->notify_bandwidth_exceeded) echo ' CHECKED ';?> />
+		<br />Check this box if you want to send your users email notifications when they exceed their bandwidth allowance.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">From Email:</td>
+	<td class="formfield"><input class="forminput" type="text" name="bandwidth_exceeded_from" value="<?php echo htmlspecialchars($this->app->config->bandwidth_exceeded_from);?>" />
+		<br />Your email address to send bandwidth exceeded notifications from.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Bandwidth Exceeded Email Subject:</td>
+	<td class="formfield"><input class="forminput" name="bandwidth_exceeded_subject" value="<?php echo htmlspecialchars($this->app->config->bandwidth_exceeded_subject);?>" />
+		<br />The subject for the emails sent when a member exceeds their monthly bandwidth allowance.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Bandwidth Exceeded Email Message:</td>
+	<td class="formfield"><textarea name="bandwidth_exceeded_message" class="forminput" style="height: 100px;"><?php echo htmlspecialchars($this->app->config->bandwidth_exceeded_message);?></textarea>
+		<br />The template for the message that is sent when a member exceeds their monthly bandwidth.
+		<br /><br />You can use the following tags in the template:
+		<br /><b>{username}</b> will be replaced by the user's username.
+		<br /><b>{sitename}</b> will be replaced by the name of your website as specified above.
+		<br /><b>{siteurl}</b> will be replaced by the url of your website as specified above.
+		<br /><b>{date}</b> will be replaced by the payment date.
+		<br /><br />You can always add your own advertising and / or affiliate links and messages at the bottom
+		of this email template.
+	</td>
+</tr>
+
+<tr>
+	<td class="formheading" colspan="2">Payment Settings</td>
+</tr>
+<tr>
+	<td class="formlabel">PayPal Email:</td>
+	<td class="formfield"><input class="forminput" type="text" name="paypal_email" value="<?php echo htmlspecialchars($this->app->config->paypal_email);?>" />
+		<br />Your PayPal email address (for account upgrade payments).
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Primary PayPal Account Email:</td>
+	<td class="formfield"><input class="forminput" type="text" name="paypal_account_email" value="<?php echo htmlspecialchars($this->app->config->paypal_account_email);?>" />
+		<br />Your PayPal account email address <b>*</b> this is only needed if you enter an email address other than
+		your primary PayPal account email address above.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Send Payment Notification Emails?</td>
+	<td class="formfield"><input type="checkbox" name="payment_notifications" value="1" <?php if( $this->app->config->payment_notifications == 1 ) echo ' CHECKED ';?> />
+		<br />Check this box if you want to send your users payment notification emails whenever they make a
+		subscription payment. <b>Note:</b> PayPal automatically send them notification emails anyway - but you may want
+		to send your own "receipt".
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Payment Confirmation Message Subject:</td>
+	<td class="formfield"><input class="forminput" name="payment_email_subject" value="<?php echo htmlspecialchars($this->app->config->payment_email_subject);?>" />
+		<br />The subject for the emails sent when a member upgrades their account via PayPal.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Payment Confirmation Email Message:</td>
+	<td class="formfield"><textarea name="payment_email_message" class="forminput" style="height: 100px;"><?php echo htmlspecialchars($this->app->config->payment_email_message);?></textarea>
+		<br />The template for the message that is sent when a member upgrades their account via paypal payment.
+		<br /><br />You can use the following tags in the template:
+		<br /><b>{username}</b> will be replaced by the user's username.
+		<br /><b>{sitename}</b> will be replaced by the name of your website as specified above.
+		<br /><b>{siteurl}</b> will be replaced by the url of your website as specified above.
+		<br /><b>{amount}</b> will be replaced by the amount of the payment.
+		<br /><b>{date}</b> will be replaced by the payment date.
+		<br /><b>{paypalemail}</b> will be replaced by the paypal email address their payment was sent from.
+		<br /><b>{expirydate}</b> will be replaced by the date their upgraded account expires.
+		<br /><br />You can always add your own advertising and / or affiliate links and messages at the bottom
+		of this email template.
+	</td>
+</tr>
+
+<tr>
+	<td class="formheading" colspan="2">Email Images Settings</td>
+</tr>
+<tr>
+	<td class="formlabel">Email Images Message Subject:</td>
+	<td class="formfield"><input class="forminput" name="email_images_subject" value="<?php echo htmlspecialchars($this->app->config->email_images_subject);?>" />
+		<br />The subject for the emails sent when a member emails links to their images to their friends.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">Email Images Message Template:</td>
+	<td class="formfield"><textarea name="email_images_template" class="forminput" style="height: 100px;"><?php echo htmlspecialchars($this->app->config->email_images_template);?></textarea>
+		<br />The template for the message that is sent when a member emails links to their images to their friends.
+		<br /><br />You can use the following tags in the template:
+		<br /><b>{message}</b> will be replaced by the message that the member has entered.
+		<br /><b>{imagelinks}</b> will be replaced by the urls of the images that the member wants to send.
+		<br /><b>{sitename}</b> will be replaced by the name of your website as specified above.
+		<br /><b>{siteurl}</b> will be replaced by the url of your website as specified above.
+		<br /><br />You can always add your own advertising and / or affiliate links and messages at the bottom
+		of this email template.
+	</td>
+</tr>
+<tr>
+	<td class="formlabel">&nbsp;</td>
+	<td class="formfield"><input type="submit" name="update" value="Save Settings" /></td>
+</tr>
+</table>
+</form>

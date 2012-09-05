@@ -1,0 +1,34 @@
+<?php
+// this just ensures noone can run this script without going through the application
+if( !defined('PIH' ) ) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+?>
+<h2><?php echo $this->t('Site News')?></h2>
+<a href="<?php echo $this->url('news')?>"><?php echo $this->t('Latest Site News')?></a>
+<a href="<?php echo $this->url('news', 'status=archived')?>"><?php echo $this->t('News Archive')?></a>
+<?php if( $news_item ) { ?>
+<h3><?php echo htmlspecialchars($news_item->headline)?></h3>
+<i><?php echo date('l jS F Y', strtotime($news_item->published))?></i>
+<p>
+    <?php echo nl2br(htmlspecialchars($news_item->summary))?>
+</p>
+<div id="newsitem">
+    <?php echo $news_item->details?>
+</div>
+
+<?php }else{?>
+<h3><?php echo $archived_news ? $this->t('News Archive') : $this->t('Latest Site News')?></h3>
+<div id="newslist">
+<?php foreach( $news_items as $item ) { ?>
+    <div>
+    <b><a href="<?php echo $this->url('news', 'article='.$item->news_id)?>"><?php echo htmlspecialchars($item->headline)?></a></b>
+    <?php echo date('l jS F Y', strtotime($item->published))?>
+    <p>
+        <?php echo nl2br(htmlspecialchars($item->summary))?>
+    </p>
+    </div>
+<?php } ?>
+</div>
+<?php } ?>
