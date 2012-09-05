@@ -246,7 +246,7 @@ EOF;
 
     function checkVars()
     {
-        $local = substr($_SERVER['HTTP_HOST'], 'localhost') !== false;
+        $local = preg_match('#localhost#i', $_SERVER['HTTP_HOST']);
 		if( !$this->app->validateemail($this->vars['admin_email']) ) $this->errors['admin_email'] = 'You must enter a valid admin email address.';
 		if( !$this->app->validateemail($this->vars['paypal_email']) ) $this->errors['paypal_email'] = 'You must enter a valid paypal email address.';
 		if( !$this->app->validateemail($this->vars['reminder_email_from']) ) $this->errors['reminder_email_from'] = 'You must enter a valid email address to send password reminders from.';
