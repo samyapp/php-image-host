@@ -31,6 +31,26 @@ class installer
     var $vars = array();
     var $errors = array();
 
+	/**
+	 * get the system temp dir
+	 * @author http://www.php.net/manual/en/function.sys-get-temp-dir.php#94119
+	 */
+	function getSysTempDir()
+	{
+		if ( function_exists('sys_get_temp_dir')) {
+			return sys_get_temp_dir();
+		}
+	      if( $temp=getenv('TMP') )        return $temp;
+	      if( $temp=getenv('TEMP') )        return $temp;
+	      if( $temp=getenv('TMPDIR') )    return $temp;
+	      $temp=tempnam(__FILE__,'');
+	      if (file_exists($temp)) {
+		  unlink($temp);
+		  return dirname($temp);
+	      }
+	      return null;
+	 }
+
     function __construct($app)
     {
         $this->app = $app;
@@ -50,7 +70,7 @@ class installer
         if( !in_array(substr($this->vars['thumb_folder'],strlen($this->vars['thumb_folder'])-1), array('/', '\\') ) ) {
             $this->vars['thumb_folder'] .= '/';
         }
-        $this->vars['temp_dir'] = realpath(dirname(__FILE__).'/../temp');
+        $this->vars['temp_dir'] = realpath($this->getSysTempDir());
 
         $domain = preg_replace('/^www\.(.{1,})\.(.{1,})$/i', '$1.$2', $domain);
 		$this->vars['admin_email'] = 'admin@'.$domain;
@@ -70,10 +90,6 @@ class installer
 <h3>Setup Custom Settings</h3>
 <p>
     This form contains some settings that must be set for php image host to function correctly.
-</p>
-<p>
-    Please visit the <a target="_blank" href="http://forum.phpace.com/">support forum</a> for information and
-    help.
 </p>
 <form action="" method="post">
 <?php if( $this->errors ) {?>
@@ -247,17 +263,17 @@ EOF;
     function checkVars()
     {
         $local = preg_match('#localhost#i', $_SERVER['HTTP_HOST']);
-		if( !$this->app->validateemail($this->vars['admin_email']) ) $this->errors['admin_email'] = 'You must enter a valid admin email address.';
-		if( !$this->app->validateemail($this->vars['paypal_email']) ) $this->errors['paypal_email'] = 'You must enter a valid paypal email address.';
-		if( !$this->app->validateemail($this->vars['reminder_email_from']) ) $this->errors['reminder_email_from'] = 'You must enter a valid email address to send password reminders from.';
-		if( !$this->app->validateemail($this->vars['signup_email_from'])) $this->errors['signup_email_from'] = 'You must enter a valid email address to send new account emails to.';
-		if( !is_dir($this->vars['image_folder'])  ){
-			$this->errors['image_folder'] = 'You must enter the full path to the folder where images are stored.';
-		}elseif(  !is_writable($this->vars['image_folder']) ){
-			$this->errors['image_folder'] =  'You must set the permissions for the images folder so that php can write to it.';
-		}else{
-			if( !preg_match('/\/$/i',$this->vars['image_folder']) ) $this->vars['image_folder'].='/';
-		}
+	if( !$local && !$this->app->validateemail($this->vars['admin_email']) ) $this->errors['admin_email'] = 'You must enter a valid admin email address.';
+	if( !$local &&  !$this->app->validateemail($this->vars['paypal_email']) ) $this->errors['paypal_email'] = 'You must enter a valid paypal email address.';
+	if(  !$local && !$this->app->validateemail($this->vars['reminder_email_from']) ) $this->errors['reminder_email_from'] = 'You must enter a valid email address to send password reminders from.';
+	if(  !$local && !$this->app->validateemail($this->vars['signup_email_from'])) $this->errors['signup_email_from'] = 'You must enter a valid email address to send new account emails to.';
+	if( !is_dir($this->vars['image_folder'])  ){
+		$this->errors['image_folder'] = 'You must enter the full path to the folder where images are stored.';
+	}elseif(  !is_writable($this->vars['image_folder']) ){
+		$this->errors['image_folder'] =  'You must set the permissions for the images folder so that php can write to it.';
+	}else{
+		if( !preg_match('/\/$/i',$this->vars['image_folder']) ) $this->vars['image_folder'].='/';
+	}
 
         if( !is_dir($this->vars['temp_dir'])  ){
 			$this->errors['temp_dir'] = 'You must enter the full path to the folder where temporary files are stored.';
